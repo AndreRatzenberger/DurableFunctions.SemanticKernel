@@ -28,6 +28,7 @@ Before diving into the project, ensure you have the following tools and accounts
     - Optionally, use the Durable Function Monitor for a visual interface to your orchestrations and activities.
 
 5. **Configuration File**: Set up your `local.settings.json` as follows, replacing placeholders with actual values:
+
 ```json
 {
   "IsEncrypted": false,
@@ -54,8 +55,6 @@ Before diving into the project, ensure you have the following tools and accounts
 - `Triggers/HttpStart.cs`: Defines an HTTP trigger for initiating the orchestrator function.
 - `Orchestrators/SemanticKernel.cs`: Orchestrates agent interactions and manages the lifecycle of kernel tasks.
 - `README.md`: Provides project documentation.
-
-
 
 ## License
 
