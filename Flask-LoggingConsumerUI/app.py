@@ -36,5 +36,10 @@ def callback():
 def fetch_callback_data():
     return jsonify(received_messages)
 
+@app.route('/clear', methods=['DELETE'])
+def clear():
+    received_messages.clear()
+    return 'Success', 200
+
 if __name__ == '__main__':
     app.run(debug=True)

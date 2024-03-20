@@ -2,7 +2,7 @@ namespace DurableFunctions.SemanticKernel.Common
 {
     public static class OrchestratorNames
     {
-        public const string SemanticKernelOrchestrator = nameof(SemanticKernelOrchestrator);
+        public const string AgentOrchestrator = nameof(AgentOrchestrator);
     }
 
 

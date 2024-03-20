@@ -89,23 +89,54 @@
     </form>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('messageForm');
+            const messageInput = document.querySelector('input[name="message"]');
+
             form.onsubmit = function (e) {
-                e.preventDefault(); 
-                const formData = new FormData(form);
-                fetch('/send', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.text()) 
-                .then(text => {
-                    console.log('Response:', text);
-                })
-                .catch(error => console.error('Error:', error));
+                e.preventDefault();
+                const message = messageInput.value.trim();
+
+                if (message.toLowerCase() === 'cli.clear') {
+                    fetch('/clear', { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                var cli = document.getElementById('cli');
+                                cli.innerHTML = '';
+                                messageInput.value = '';
+                                console.log('CLI cleared');
+                            } else {
+                                console.error('Failed to clear CLI');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                } else {
+                    fetch('/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `message=${encodeURIComponent(message)}`,
+                    })
+                        .then(response => response.text())
+                        .then(text => {
+                            console.log('Response:', text);
+                            fetch('/callback', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'text/plain' },
+                                body: `INPUT: ${message}`,
+                            })
+                                .then(response => {
+                                    messageInput.value = ''; // Clear the input field after sending the message
+                                })
+                                .catch(error => console.error('Error posting to callback:', error));
+                        })
+                        .catch(error => console.error('Error sending message:', error));
+                }
             };
-    
+
+            var converter = new showdown.Converter();
             function fetchCallbackData() {
                 fetch("/fetch-callback-data")
                     .then(response => response.json())
@@ -113,19 +144,20 @@
                         var cli = document.getElementById('cli');
                         cli.innerHTML = ''; // Clear the CLI div before adding new data
                         data.forEach(function (msg) {
-                            // If you've switched to plain text, you'll need to adjust how you display `msg`
-                            cli.innerHTML += JSON.stringify(msg) + '<br>'; // Assuming `msg` is still an object
+                            // Convert each message from Markdown to HTML
+                            var html = converter.makeHtml(msg);
+                            // Replace line breaks in the HTML string with <br> tags
+                            html = html.replace(/\n/g, '');
+                            // Append the formatted message to the CLI div
+                            cli.innerHTML += html;
                         });
                     })
                     .catch(error => console.error('Error fetching callback data:', error));
             }
-    
+
             setInterval(fetchCallbackData, 1000); // Refresh callback data every second
         });
     </script>
-    
-
-
 </body>
 
 </html>

@@ -25,12 +25,13 @@ namespace DurableFunctions.SemanticKernel.Activities
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
             var log = context.GetLogger(nameof(SimplePromptQandAAgent));
-            await log.LogToExternAsync($"Agent started with input:<br> {input}");
-            log.LogInformationWithMetadata($"Agent started with input: {input}");
+            await log.LogToExternWithMetadataAsync($"<hr><b>AGENT STARTED</b><hr>");
+
             var response = await _kernel.InvokePromptAsync(input);
             var result = response.GetValue<string>();
-            log.LogInformationWithMetadata($"Agent returned with output: {result}");
-            await log.LogToExternAsync($"Agent returned with output:<br> {result}");
+
+            await log.LogToExternAsync($"<br>{result}<hr>");
+            await log.LogToExternWithMetadataAsync($"<b>AGENT FINISHED</b><hr>");
             return result;
         }
 
