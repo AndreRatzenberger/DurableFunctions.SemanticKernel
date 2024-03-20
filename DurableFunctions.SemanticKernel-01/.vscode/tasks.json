@@ -60,12 +60,75 @@
 			"problemMatcher": "$msCompile"
 		},
 		{
+			"label": "python environment",
+			"dependsOn": "host start",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-m",
+				"venv",
+				".venv"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../Flask-LoggingConsumerUI"
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "pip install requirements.txt",
+			"type": "shell",
+			"command": "pip",
+			"args": [
+				"install",
+				"-r",
+				"requirements.txt"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../Flask-LoggingConsumerUI"
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"dependsOn": "python environment",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Run (FlaskApp + Function)",
+			"type": "shell",
+			"command": "flask",
+			"args": [
+				"--app",
+				"app",
+				"run",
+				"--port",
+				"8001"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../Flask-LoggingConsumerUI"
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"dependsOn": "pip install requirements.txt",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "host start",
 			"type": "func",
 			"dependsOn": "build (functions)",
 			"options": {
 				"cwd": "${workspaceFolder}/bin/Debug/net8.0"
 			},
-			"command": "host start",
+			"command": "host start --port 7071",
 			"isBackground": true,
 			"problemMatcher": "$func-dotnet-watch"
 		}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DurableFunction.SemanticKernel UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        #cli {
+            background-color: #263238;
+            color: #80cbc4;
+            font-family: monospace;
+            padding: 10px;
+            width: 95%;
+            min-width: 80%;
+            max-width: 100%;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        form {
+            display: flex;
+            width: 95%;
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            margin-right: 8px;
+            border: 2px solid #263238;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        button {
+            background-color: #009688;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #00796b;
+        }
+
+        h2 {
+            display: block;
+            font-size: 1.5em;
+            margin-block-start: 10px;
+            margin-block-end: 0;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>DurableFunction.SemanticKernel UI</h2>
+    <div id="cli"></div>
+    <form id="messageForm" action="/send" method="post">
+        <input type="text" name="message" placeholder="Enter message here" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function fetchCallbackData() {
+            $.get("/fetch-callback-data", function (data) {
+                var cli = $('#cli');
+                cli.empty(); 
+                data.forEach(function (msg) {
+                    cli.append(JSON.stringify(msg) + '<br>');
+                });
+            });
+        }
+
+        setInterval(fetchCallbackData, 1000); 
+    </script>
+
+</body>
+
+</html>
