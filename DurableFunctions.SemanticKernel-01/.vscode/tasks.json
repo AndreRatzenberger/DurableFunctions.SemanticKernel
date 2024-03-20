@@ -75,8 +75,7 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"presentation": {
-				"reveal": "always",
-				"panel": "new"
+				"reveal":"silent"
 			}
 		},
 		{
@@ -95,8 +94,7 @@
 			"problemMatcher": [],
 			"dependsOn": "python environment",
 			"presentation": {
-				"reveal": "always",
-				"panel": "new"
+				"reveal":"silent"
 			}
 		},
 		{
@@ -117,8 +115,7 @@
 			"problemMatcher": [],
 			"dependsOn": "pip install requirements.txt",
 			"presentation": {
-				"reveal": "always",
-				"panel": "new"
+				"reveal": "always"
 			}
 		},
 		{
