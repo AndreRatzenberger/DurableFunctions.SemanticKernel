@@ -1,7 +1,6 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using Microsoft.Extensions.Options;
 using DurableFunctions.SemanticKernel.Ex01.Extensions;
 
 
@@ -9,15 +8,16 @@ namespace DurableFunctions.SemanticKernel.Activities
 {
     public class SimplePromptQandAAgent
     {
-        private readonly OpenAIOptions _openAIOptions;
+
+        private readonly ConfigurationService _configurationService;
         private Kernel _kernel;
 
-        public SimplePromptQandAAgent(IOptions<OpenAIOptions> openAIOptions)
+        public SimplePromptQandAAgent(ConfigurationService configurationService)
         {
-            _openAIOptions = openAIOptions.Value;
+            _configurationService = configurationService;
             _kernel = Kernel.CreateBuilder()
-               .AddOpenAIChatCompletion(modelId: _openAIOptions.ModelId, apiKey: _openAIOptions.ApiKey)
-               .Build();
+                .WithOptionsConfiguration(_configurationService.GetCurrentConfiguration())    
+                .Build();
         }
 
 
