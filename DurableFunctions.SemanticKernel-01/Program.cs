@@ -18,9 +18,11 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         services.Configure<OpenAIOptions>(hostingContext.Configuration.GetSection(nameof(OpenAIOptions)));
+        services.Configure<AzureOpenAIOptions>(hostingContext.Configuration.GetSection(nameof(AzureOpenAIOptions)));
         services.AddSingleton<SimplePromptQandAAgent>();
-        LoggerConfiguration.ConfigureLogger("DURABLE AI");
+        services.AddSingleton<ConfigurationService>();
 
+        LoggerConfiguration.ConfigureLogger("DURABLE AI");
     })
     .Build();
 
