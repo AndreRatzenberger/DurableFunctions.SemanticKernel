@@ -58,10 +58,9 @@ namespace DurableFunctions.SemanticKernel.Ex01.Extensions
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //logger.LogErrorWithMetadata(ex, $"Failed to log to external log");
-
             }
         }
 

@@ -61,7 +61,7 @@
 		},
 		{
 			"label": "python environment",
-			"dependsOn": "host start",
+			"dependsOn": "### Run (Function)",
 			"type": "shell",
 			"command": "python",
 			"args": [
@@ -100,7 +100,7 @@
 			}
 		},
 		{
-			"label": "Run (FlaskApp + Function)",
+			"label": "### Run (FlaskApp + Function)",
 			"type": "shell",
 			"command": "flask",
 			"args": [
@@ -122,7 +122,7 @@
 			}
 		},
 		{
-			"label": "host start",
+			"label": "### Run (Function)",
 			"type": "func",
 			"dependsOn": "build (functions)",
 			"options": {
