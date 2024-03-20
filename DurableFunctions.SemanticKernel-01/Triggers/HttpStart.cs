@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 using DurableFunctions.SemanticKernel.Common;
+using DurableFunctions.SemanticKernel.Ex01.Extensions;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {

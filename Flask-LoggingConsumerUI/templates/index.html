@@ -90,18 +90,41 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function fetchCallbackData() {
-            $.get("/fetch-callback-data", function (data) {
-                var cli = $('#cli');
-                cli.empty(); 
-                data.forEach(function (msg) {
-                    cli.append(JSON.stringify(msg) + '<br>');
-                });
-            });
-        }
-
-        setInterval(fetchCallbackData, 1000); 
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('messageForm');
+            form.onsubmit = function (e) {
+                e.preventDefault(); 
+                const formData = new FormData(form);
+                fetch('/send', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text()) 
+                .then(text => {
+                    console.log('Response:', text);
+                })
+                .catch(error => console.error('Error:', error));
+            };
+    
+            function fetchCallbackData() {
+                fetch("/fetch-callback-data")
+                    .then(response => response.json())
+                    .then(data => {
+                        var cli = document.getElementById('cli');
+                        cli.innerHTML = ''; // Clear the CLI div before adding new data
+                        data.forEach(function (msg) {
+                            // If you've switched to plain text, you'll need to adjust how you display `msg`
+                            cli.innerHTML += JSON.stringify(msg) + '<br>'; // Assuming `msg` is still an object
+                        });
+                    })
+                    .catch(error => console.error('Error fetching callback data:', error));
+            }
+    
+            setInterval(fetchCallbackData, 1000); // Refresh callback data every second
+        });
     </script>
+    
+
 
 </body>
 
