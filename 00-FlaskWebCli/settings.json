@@ -1,0 +1,3 @@
+{
+    "target_endpoint": "http://localhost:7071/api/StartSemanticKernel"
+}

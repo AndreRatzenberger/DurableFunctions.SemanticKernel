@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "DurableFunctions.SemanticKernel-01": {
+    "SimplePromptAgent": {
       "commandName": "Project",
       "commandLineArgs": "--port 7049",
       "launchBrowser": false
