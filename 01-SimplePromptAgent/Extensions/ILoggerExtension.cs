@@ -26,45 +26,7 @@ namespace DurableFunctions.SemanticKernel.Extentions
 
     public static class LoggerExtensions
     {
-        private static readonly HttpClient httpClient = new();
-
-        public static async Task LogToExternWithMetadataAsync(this ILogger logger, string message, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "")
-        {
-            var id = LoggerConfiguration.GetId();
-            var className = GetClassNameFromFilePath(filePath);
-
-            var msg = $"# {id} - {className} - {methodName} - {message}";
-
-            await SendLogToExternal(msg, logger);
-        }
-
-        public static async Task LogToExternAsync(this ILogger logger, string message)
-        {
-            await SendLogToExternal(message, logger);
-        }
-
-        private static async Task SendLogToExternal(string msg, ILogger logger)
-        {
-            try
-            {
-                var endpoint = Environment.GetEnvironmentVariable("ExternalLogEndpoint");
-                if (endpoint != null)
-                {
-                    var content = new StringContent(msg, Encoding.UTF8, "application/json");
-                    var response = await httpClient.PostAsync(endpoint, content);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        logger.LogErrorWithMetadata($"Failed to log to {endpoint}: {response.StatusCode}");
-                    }
-                }
-            }
-            catch
-            {
-                //logger.LogErrorWithMetadata($"Failed to log to external log");
-            }
-        }
-
-
+        
         //LogInformation extention
         public static void LogInformationWithMetadata(this ILogger logger, string message, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "")
         {

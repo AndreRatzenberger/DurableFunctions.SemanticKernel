@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using DurableFunctions.SemanticKernel.Common;
 using DurableFunctions.SemanticKernel.Extentions;
+using DurableFunctions.SemanticKernel.Services;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {
@@ -22,7 +23,7 @@ namespace DurableFunctions.SemanticKernel.Functions
                 requestBody = await reader.ReadToEndAsync();
             }
             var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(OrchestratorNames.AgentOrchestrator, requestBody);
-            _ = logger.LogToExternAsync($"Started {OrchestratorNames.AgentOrchestrator} with ID = '{instanceId}'");
+            _ = WebCliBridge.SendMessage($"Started {OrchestratorNames.AgentOrchestrator} with ID = '{instanceId}'");
             return client.CreateCheckStatusResponse(req, instanceId);
         }
     }

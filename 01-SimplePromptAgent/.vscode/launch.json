@@ -7,7 +7,8 @@
             "type": "chrome",
             "url": "http://localhost:8001",
             "webRoot": "${workspaceFolder}",
-            "preLaunchTask": "### Run (FlaskApp + Function)"
+            "preLaunchTask": "### Run (FlaskApp + Function)",
+            "postDebugTask": ""
         },
         {
             "name": "Attach to .NET Functions",
@@ -19,7 +20,13 @@
     "compounds": [
         {
             "name": "### Debug in Chrome",
-            "configurations": ["Launch Chrome", "Attach to .NET Functions"]
+            "configurations": ["Launch Chrome", "Attach to .NET Functions"],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Test",
+                "order": 1
+            }
         }
     ]
 }

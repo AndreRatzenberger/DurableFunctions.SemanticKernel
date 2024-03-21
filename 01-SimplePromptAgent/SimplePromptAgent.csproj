@@ -5,7 +5,6 @@
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UserSecretsId>330c53fb-8b84-44be-a5c4-6bbb414b1aca</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <!-- Workaround for M1 and M2 macs: ONLY WORKS WITH 2.41.0 
