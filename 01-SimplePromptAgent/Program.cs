@@ -3,8 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Activities;
-using DurableFunctions.SemanticKernel.Ex01.Extensions;
+using DurableFunctions.SemanticKernel.Agents;
+using DurableFunctions.SemanticKernel.Extentions;
 
 
 var host = new HostBuilder()
@@ -19,7 +19,7 @@ var host = new HostBuilder()
 
         services.Configure<OpenAIOptions>(hostingContext.Configuration.GetSection(nameof(OpenAIOptions)));
         services.Configure<AzureOpenAIOptions>(hostingContext.Configuration.GetSection(nameof(AzureOpenAIOptions)));
-        services.AddSingleton<SimplePromptQandAAgent>();
+        services.AddSingleton<SimplePrompAgent>();
         services.AddSingleton<ConfigurationService>();
 
         LoggerConfiguration.ConfigureLogger("DURABLE AI");

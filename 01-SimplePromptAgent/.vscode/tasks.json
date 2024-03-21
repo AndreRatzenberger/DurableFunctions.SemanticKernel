@@ -8,11 +8,22 @@
 				"clean",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"DurableFunctions.SemanticKernel.Ex01.csproj"
+				"SimplePromptAgent.csproj"
 			],
 			"type": "process",
 			"problemMatcher": "$msCompile"
 		},
+		{
+			"label": "Delete .azurite folder",
+			"type": "process",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"& { if (Test-Path '${workspaceFolder}/.azurite') { Remove-Item -Path '${workspaceFolder}/.azurite' -Recurse -Force } }"
+			],
+			"problemMatcher": [],
+		},		
 		{
 			"label": "build (functions)",
 			"command": "dotnet",
@@ -20,10 +31,10 @@
 				"build",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"DurableFunctions.SemanticKernel.Ex01.csproj"
+				"SimplePromptAgent.csproj"
 			],
 			"type": "process",
-			"dependsOn": "clean (functions)",
+			"dependsOn": "Delete .azurite folder",
 			"group": {
 				"kind": "build",
 				"isDefault": true
@@ -39,7 +50,7 @@
 				"Release",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"DurableFunctions.SemanticKernel.Ex01.csproj"
+				"SimplePromptAgent.csproj"
 			],
 			"type": "process",
 			"problemMatcher": "$msCompile"
@@ -53,7 +64,7 @@
 				"Release",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"DurableFunctions.SemanticKernel.Ex01.csproj"
+				"SimplePromptAgent.csproj"
 			],
 			"type": "process",
 			"dependsOn": "clean release (functions)",
@@ -70,12 +81,13 @@
 				".venv"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/../Flask-LoggingConsumerUI"
+				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
 			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"presentation": {
-				"reveal":"silent"
+				"reveal":"silent",
+				"panel": "shared"
 			}
 		},
 		{
@@ -88,13 +100,14 @@
 				"requirements.txt"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/../Flask-LoggingConsumerUI"
+				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
 			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"dependsOn": "python environment",
 			"presentation": {
-				"reveal":"silent"
+				"reveal":"silent",
+				"panel": "shared"
 			}
 		},
 		{
@@ -109,25 +122,73 @@
 				"8001"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/../Flask-LoggingConsumerUI"
+				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
 			},
 			"isBackground": true,
-			"problemMatcher": [],
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".*Running on http.*",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*Running on http.*",
+					"endsPattern": ".*Running on http.*" 
+				}
+			},
 			"dependsOn": "pip install requirements.txt",
 			"presentation": {
-				"reveal": "always"
+				"reveal": "always",
+				"panel": "new"
 			}
 		},
 		{
 			"label": "### Run (Function)",
 			"type": "func",
-			"dependsOn": "build (functions)",
+			"dependsOn": "### Run azurite",
 			"options": {
 				"cwd": "${workspaceFolder}/bin/Debug/net8.0"
 			},
 			"command": "host start --port 7071",
 			"isBackground": true,
-			"problemMatcher": "$func-dotnet-watch"
+			"problemMatcher": "$func-dotnet-watch",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "### Run azurite",
+			"type": "shell",
+			"dependsOn": "build (functions)",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"command": "azurite --silent --location .azurite --debug .azurite/debug.log",
+			"isBackground": true,
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".*Azurite Blob service is successfully listening at.*",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*Azurite Blob service is successfully listening at.*",
+					"endsPattern": ".*Azurite Blob service is successfully listening at.*" 
+				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
 		}
 	]
 }

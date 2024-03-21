@@ -1,18 +1,18 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Ex01.Extensions;
+using DurableFunctions.SemanticKernel.Extentions;
 
 
-namespace DurableFunctions.SemanticKernel.Activities
+namespace DurableFunctions.SemanticKernel.Agents
 {
-    public class SimplePromptQandAAgent
+    public class SimplePrompAgent
     {
 
         private readonly ConfigurationService _configurationService;
         private Kernel _kernel;
 
-        public SimplePromptQandAAgent(ConfigurationService configurationService)
+        public SimplePrompAgent(ConfigurationService configurationService)
         {
             _configurationService = configurationService;
             _kernel = Kernel.CreateBuilder()
@@ -21,17 +21,17 @@ namespace DurableFunctions.SemanticKernel.Activities
         }
 
 
-        [Function($"{nameof(SimplePromptQandAAgent)}_{nameof(Start)}")]
+        [Function($"{nameof(SimplePrompAgent)}_{nameof(Start)}")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
-            var log = context.GetLogger(nameof(SimplePromptQandAAgent));
-            await log.LogToExternAsync($"## <hr><b>{nameof(SimplePromptQandAAgent)} STARTED</b><hr>");
+            var log = context.GetLogger(nameof(SimplePrompAgent));
+            await log.LogToExternAsync($"## <hr><b>{nameof(SimplePrompAgent)} STARTED</b><hr>");
 
             var response = await _kernel.InvokePromptAsync(input);
             var result = response.GetValue<string>();
 
             await log.LogToExternAsync($"<br>{result}<br><hr>");
-            await log.LogToExternAsync($"## <b>{nameof(SimplePromptQandAAgent)}  FINISHED</b><hr>");
+            await log.LogToExternAsync($"## <b>{nameof(SimplePrompAgent)}  FINISHED</b><hr>");
             return result;
         }
 

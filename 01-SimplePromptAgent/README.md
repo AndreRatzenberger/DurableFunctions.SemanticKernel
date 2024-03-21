@@ -1,5 +1,5 @@
 
-# .NET 8 Isolated - Durable Functions + Semantic Kernel Integration Project - Ex01
+# Example 01 - Simple Prompt Agent
 
 This example shows how to build a Kernel and send a prompt to it via an Orchestration of an Agent (which are basically just renamed Durable Functions Activities)
 
@@ -51,7 +51,7 @@ Before diving into the project, ensure you have the following tools and accounts
 
 - `Program.cs`: Initializes and configures the function app.
 - `Options/OpenAIOptions.cs`: Holds configuration options for OpenAI integration.
-- `Agents/SimplePromptQandAAgent.cs`: Implements an agent capable of processing prompts and returning responses.
+- `Agents/SimplePromptAgent.cs`: Implements an agent capable of processing prompts and returning responses.
 - `Triggers/HttpStart.cs`: Defines an HTTP trigger for initiating the orchestrator function.
 - `Orchestrators/SemanticKernel.cs`: Orchestrates agent interactions and manages the lifecycle of kernel tasks.
 - `README.md`: Provides project documentation.

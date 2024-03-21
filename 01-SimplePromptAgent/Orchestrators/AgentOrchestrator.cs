@@ -1,4 +1,4 @@
-using DurableFunctions.SemanticKernel.Activities;
+using DurableFunctions.SemanticKernel.Agents;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 
@@ -10,7 +10,7 @@ namespace DurableFunctions.SemanticKernel.Orchestrators
         public static async Task<string> AgentOrchestratorAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var prompt = context.GetInput<string>();
-            var response = await context.CallActivityAsync<string>($"{nameof(SimplePromptQandAAgent)}_{nameof(SimplePromptQandAAgent.Start)}", prompt);
+            var response = await context.CallActivityAsync<string>($"{nameof(SimplePrompAgent)}_{nameof(SimplePrompAgent.Start)}", prompt);
             return response;
         }
     }

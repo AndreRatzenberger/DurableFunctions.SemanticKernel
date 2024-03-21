@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 
 
-namespace DurableFunctions.SemanticKernel.Ex01.Extensions
+namespace DurableFunctions.SemanticKernel.Extentions
 {
     //Provides LogInformationWithMetadata and LogErrorWithMetadata extensions
     //These extensions will add "# {ID} - {CLASS_NAME} - {METHOD_NAME} - " before the message
