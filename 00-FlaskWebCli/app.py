@@ -19,18 +19,12 @@ def send_data():
     headers = {'Content-Type': 'text/plain'}
     response = requests.post(config['target_endpoint'], data=message, headers=headers)
     return response.text
-    # data_to_send = {'message': message}
-    # response = requests.post(config['target_endpoint'], json=data_to_send)
-    # return jsonify({'status': 'sent', 'response': response.text})
 
 @app.route('/callback', methods=['POST'])
 def callback():
     data = request.data.decode('utf-8') 
     received_messages.append(data)  
     return 'Success', 200
-    # data = request.json
-    # received_messages.append(data)  
-    # return jsonify({'status': 'success', 'data_received': True})
 
 @app.route('/fetch-callback-data', methods=['GET'])
 def fetch_callback_data():
