@@ -1,0 +1,22 @@
+{
+    "name": "GenerateBacklog",
+    "input": "",
+    "skills": [
+        {
+            "name": "Plugins",
+            "folder": "Agents",
+            "isSemantic": true,
+            "functions": [
+                {
+                    "label": "ComplexityChecker"
+                },
+                {
+                    "label": "ProjectPlanner"
+                },
+                {
+                    "label": "SimpleTasks"
+                }
+            ]
+        }
+    ]
+}

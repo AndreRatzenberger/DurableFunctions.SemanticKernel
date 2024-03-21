@@ -28,6 +28,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Agents/Plugins/**/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+</ItemGroup>
+  <ItemGroup>
     <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
   </ItemGroup>
   <!-- Workaround for M1 and M2 macs:

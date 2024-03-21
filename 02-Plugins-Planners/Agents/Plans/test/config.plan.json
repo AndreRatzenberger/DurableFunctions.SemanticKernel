@@ -1,0 +1,16 @@
+{
+    "name": "test",
+    "input": "",
+    "skills": [
+        {
+            "name": "Plugins",
+            "folder": "Agents",
+            "isSemantic": true,
+            "functions": [
+                {
+                    "label": "ProjectPlanner"
+                }
+            ]
+        }
+    ]
+}

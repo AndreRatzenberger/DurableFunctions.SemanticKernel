@@ -1,0 +1,72 @@
+{
+    "plan": {
+        "state": [
+            {
+                "Key": "INPUT",
+                "Value": ""
+            }
+        ],
+        "steps": [
+            {
+                "state": [
+                    {
+                        "Key": "INPUT",
+                        "Value": ""
+                    }
+                ],
+                "steps": [],
+                "parameters": [
+                    {
+                        "Key": "INPUT",
+                        "Value": "Generates a project plan and then generates backlog items so a Project Manager can start filling up their ALM plattform"
+                    }
+                ],
+                "outputs": [
+                    "PROJECT_PLAN"
+                ],
+                "next_step_index": 0,
+                "name": "ProjectPlanner",
+                "skill_name": "Plugins",
+                "description": "Generates high level Project Plans",
+                "executed": false
+            },
+            {
+                "state": [
+                    {
+                        "Key": "INPUT",
+                        "Value": ""
+                    }
+                ],
+                "steps": [],
+                "parameters": [
+                    {
+                        "Key": "INPUT",
+                        "Value": "$PROJECT_PLAN"
+                    }
+                ],
+                "outputs": [
+                    "RESULT__BACKLOG_ITEMS"
+                ],
+                "next_step_index": 0,
+                "name": "ComplexityChecker",
+                "skill_name": "Plugins",
+                "description": "Evaluates the complexity of a project plan and generates the backlog tiers needed to realize the project",
+                "executed": false
+            }
+        ],
+        "parameters": [
+            {
+                "Key": "INPUT",
+                "Value": ""
+            }
+        ],
+        "outputs": [
+            "RESULT__BACKLOG_ITEMS"
+        ],
+        "next_step_index": 0,
+        "name": "",
+        "skill_name": "Microsoft.SemanticKernel.Planning.Plan",
+        "description": "Generates a project plan and then generates backlog items so a Project Manager can start filling up their ALM plattform",
+        "executed": false
+    }
+}

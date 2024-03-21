@@ -7,7 +7,7 @@ using DurableFunctions.SemanticKernel.Services;
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
-    public class SimplePrompAgent
+    public class SimplePrompAgent : BaseAgent
     {
 
         private readonly ConfigurationService _configurationService;
@@ -21,19 +21,17 @@ namespace DurableFunctions.SemanticKernel.Agents
                 .Build();
         }
 
-
         [Function($"{nameof(SimplePrompAgent)}_{nameof(Start)}")]
-        public async Task<string?> Start([ActivityTrigger] string input)
+        public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
-            await WebCliBridge.SendMessage($"## <hr><b>{nameof(SimplePrompAgent)} STARTED</b><hr>");
-
-            var response = await _kernel.InvokePromptAsync(input);
-            var result = response.GetValue<string>();
-
-            await WebCliBridge.SendMessage($"<br>{result}<br><br><hr>");
-            await WebCliBridge.SendMessage($"## <b>{nameof(SimplePrompAgent)}  FINISHED</b><hr>");
-            return result;
+            return await StartTemplate(input, context);
         }
 
+        protected override async Task<string?> ExecuteAgent(string input)
+        {
+            var response = await _kernel.InvokePromptAsync(input);
+            var result = response.GetValue<string>();
+            return result;
+        }
     }
 }
