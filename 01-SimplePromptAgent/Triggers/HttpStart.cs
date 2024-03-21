@@ -1,8 +1,9 @@
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
-using Microsoft.Extensions.Logging;
 using DurableFunctions.SemanticKernel.Common;
+using DurableFunctions.SemanticKernel.Extentions;
+using DurableFunctions.SemanticKernel.Services;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {
@@ -21,8 +22,8 @@ namespace DurableFunctions.SemanticKernel.Functions
             {
                 requestBody = await reader.ReadToEndAsync();
             }
-            var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(OrchestratorNames.SemanticKernelOrchestrator, requestBody);
-            logger.LogInformation("Started orchestrator with instance ID = {instanceId}", instanceId);
+            var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(OrchestratorNames.AgentOrchestrator, requestBody);
+            _ = WebCliBridge.SendMessage($"Started {OrchestratorNames.AgentOrchestrator} with ID = '{instanceId}'");
             return client.CreateCheckStatusResponse(req, instanceId);
         }
     }

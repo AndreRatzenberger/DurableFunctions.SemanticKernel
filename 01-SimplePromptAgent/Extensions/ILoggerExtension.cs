@@ -1,8 +1,9 @@
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 
-namespace DurableFunctions.SemanticKernel.Ex01.Extensions
+namespace DurableFunctions.SemanticKernel.Extentions
 {
     //Provides LogInformationWithMetadata and LogErrorWithMetadata extensions
     //These extensions will add "# {ID} - {CLASS_NAME} - {METHOD_NAME} - " before the message
@@ -25,6 +26,7 @@ namespace DurableFunctions.SemanticKernel.Ex01.Extensions
 
     public static class LoggerExtensions
     {
+        
         //LogInformation extention
         public static void LogInformationWithMetadata(this ILogger logger, string message, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "")
         {
@@ -32,6 +34,12 @@ namespace DurableFunctions.SemanticKernel.Ex01.Extensions
             var className = GetClassNameFromFilePath(filePath);
 
             logger.LogInformation($"# {id} - {className} - {methodName} - {message}");
+
+            bool.TryParse(Environment.GetEnvironmentVariable("UseExternalLog"), out var isExternalLog);
+            if (isExternalLog)
+            {
+                logger.LogInformation($"# {id} - {className} - {methodName} - {message}");
+            }
         }
 
         //for durable function - based on isReplay flag do the logging or not

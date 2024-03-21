@@ -9,9 +9,9 @@ The goal is to familiarize developers with the core concepts of Semantic Kernel 
 
 ## Quick overview of all examples
 
-### Example 01 - DurableFunctions.SemanticKernel-01
+### Example 01 - Simple Prompt Agent
 
-Simple Durable Functions Project implementing the basics of Durable Functions and building a SemanticKernel Kernel to act as a small agent that can answer simple questions.
+Simple Durable Functions Project implementing the basics of Durable Functions and building a SemanticKernel Kernel to act as a small agent that can answer simple prompts and questions.
 
 ## More Info
 

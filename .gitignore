@@ -8,6 +8,9 @@
 *.userosscache
 *.sln.docstates
 
+.venv/
+.azurite/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 .DS_Store
