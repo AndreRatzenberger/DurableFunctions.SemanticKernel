@@ -21,13 +21,20 @@ namespace DurableFunctions.SemanticKernel.Services
 
         public async static Task SendMessage(string input)
         {
-            var endpoint = WebCliConfiguration.GetEndpoint();  
-            if (string.IsNullOrEmpty(endpoint))
-                return;
+            try
+            {
+                var endpoint = WebCliConfiguration.GetEndpoint();
+                if (string.IsNullOrEmpty(endpoint))
+                    return;
 
-            var content = new StringContent(input);
+                var content = new StringContent(input);
 
-            _ = await httpClient.PostAsync(endpoint, content);
+                _ = await httpClient.PostAsync(endpoint, content);
+            }
+            catch (System.Exception)
+            {
+
+            }
         }
     }
 }

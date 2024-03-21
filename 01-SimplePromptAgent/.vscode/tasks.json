@@ -22,8 +22,8 @@
 				"-Command",
 				"& { if (Test-Path '${workspaceFolder}/.azurite') { Remove-Item -Path '${workspaceFolder}/.azurite' -Recurse -Force } }"
 			],
-			"problemMatcher": [],
-		},		
+			"problemMatcher": []
+		},
 		{
 			"label": "build (functions)",
 			"command": "dotnet",
@@ -86,7 +86,7 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"presentation": {
-				"reveal":"silent",
+				"reveal": "silent",
 				"panel": "shared"
 			}
 		},
@@ -106,7 +106,7 @@
 			"problemMatcher": [],
 			"dependsOn": "python environment",
 			"presentation": {
-				"reveal":"silent",
+				"reveal": "silent",
 				"panel": "shared"
 			}
 		},
@@ -124,6 +124,7 @@
 			"options": {
 				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
 			},
+			"detail": "Starts azurite, flask app and function",
 			"isBackground": true,
 			"problemMatcher": {
 				"pattern": [
@@ -137,7 +138,7 @@
 				"background": {
 					"activeOnStart": true,
 					"beginsPattern": ".*Running on http.*",
-					"endsPattern": ".*Running on http.*" 
+					"endsPattern": ".*Running on http.*"
 				}
 			},
 			"dependsOn": "pip install requirements.txt",
@@ -149,11 +150,12 @@
 		{
 			"label": "### Run (Function)",
 			"type": "func",
-			"dependsOn": "### Run azurite",
+			"dependsOn": "run azurite",
 			"options": {
 				"cwd": "${workspaceFolder}/bin/Debug/net8.0"
 			},
 			"command": "host start --port 7071",
+			"detail": "Starts azurite and function",
 			"isBackground": true,
 			"problemMatcher": "$func-dotnet-watch",
 			"presentation": {
@@ -162,7 +164,7 @@
 			}
 		},
 		{
-			"label": "### Run azurite",
+			"label": "run azurite",
 			"type": "shell",
 			"dependsOn": "build (functions)",
 			"options": {
@@ -182,7 +184,7 @@
 				"background": {
 					"activeOnStart": true,
 					"beginsPattern": ".*Azurite Blob service is successfully listening at.*",
-					"endsPattern": ".*Azurite Blob service is successfully listening at.*" 
+					"endsPattern": ".*Azurite Blob service is successfully listening at.*"
 				}
 			},
 			"presentation": {
