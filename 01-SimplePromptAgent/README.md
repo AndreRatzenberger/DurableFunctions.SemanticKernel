@@ -11,6 +11,7 @@ Before diving into the project, ensure you have the following tools and accounts
 - **Azure Functions Core Tools**: Necessary for local development and testing. [Download Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
 - **Visual Studio or VS Code**: With Azure development and Azure Function Tools extensions installed for a streamlined development experience.
 - **An OpenAI API key**: Required for accessing LLM services. Obtain this from the [OpenAI website](https://openai.com) after registration.
+- **Or an Azure OpenAI Ressource**
 - **Durable Function Monitor**: For detailed insights into function orchestrations and activities.
 - **Azurite or Azure Storage Account**: Durable Functions require storage to manage state. Azurite offers a local storage emulator suitable for development.
 - **Azure Storage Explorer**: Optional but recommended for managing and inspecting Azure Storage resources.
@@ -55,7 +56,3 @@ Before diving into the project, ensure you have the following tools and accounts
 - `Triggers/HttpStart.cs`: Defines an HTTP trigger for initiating the orchestrator function.
 - `Orchestrators/SemanticKernel.cs`: Orchestrates agent interactions and manages the lifecycle of kernel tasks.
 - `README.md`: Provides project documentation.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

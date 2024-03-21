@@ -6,13 +6,14 @@ using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Agents;
 using DurableFunctions.SemanticKernel.Extentions;
 
-
 var host = new HostBuilder()
-    .ConfigureAppConfiguration((hostingContext,config) => {
-        config.AddEnvironmentVariables();
+    .ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        config.AddEnvironmentVariables(); //why don't user secrets work? .AddUserSecrets<Program>();
     })
     .ConfigureFunctionsWorkerDefaults()
-    .ConfigureServices((hostingContext,services) => {
+    .ConfigureServices((hostingContext, services) =>
+    {
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();

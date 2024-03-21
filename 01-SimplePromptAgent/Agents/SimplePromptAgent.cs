@@ -30,7 +30,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             var response = await _kernel.InvokePromptAsync(input);
             var result = response.GetValue<string>();
 
-            await log.LogToExternAsync($"<br>{result}<br><hr>");
+            await log.LogToExternAsync($"<br>{result}<br><br><hr>");
             await log.LogToExternAsync($"## <b>{nameof(SimplePrompAgent)}  FINISHED</b><hr>");
             return result;
         }
