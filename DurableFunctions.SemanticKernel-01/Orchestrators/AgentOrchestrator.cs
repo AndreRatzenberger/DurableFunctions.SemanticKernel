@@ -10,7 +10,7 @@ namespace DurableFunctions.SemanticKernel.Orchestrators
         public static async Task<string> AgentOrchestratorAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var prompt = context.GetInput<string>();
-            var response = await context.CallActivityAsync<string>(nameof(SimplePromptQandAAgent.Start), prompt);
+            var response = await context.CallActivityAsync<string>($"{nameof(SimplePromptQandAAgent)}_{nameof(SimplePromptQandAAgent.Start)}", prompt);
             return response;
         }
     }
