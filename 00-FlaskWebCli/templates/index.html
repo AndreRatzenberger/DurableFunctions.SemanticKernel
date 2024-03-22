@@ -145,7 +145,7 @@
                         cli.innerHTML = ''; 
                         data.forEach(function (msg) {
                             var html = converter.makeHtml(msg);
-                            html = html.replace(/\n/g, '');
+                            html = html.replace(/\n/g, '<br>');
                             cli.innerHTML += html;
                         });
                     })

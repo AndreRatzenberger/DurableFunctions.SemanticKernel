@@ -2,7 +2,6 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using DurableFunctions.SemanticKernel.Common;
-using DurableFunctions.SemanticKernel.Extentions;
 using DurableFunctions.SemanticKernel.Services;
 
 namespace DurableFunctions.SemanticKernel.Functions

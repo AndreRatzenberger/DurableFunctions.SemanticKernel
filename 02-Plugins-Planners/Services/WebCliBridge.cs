@@ -1,6 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography;
-
 namespace DurableFunctions.SemanticKernel.Services
 {
     public static class WebCliConfiguration

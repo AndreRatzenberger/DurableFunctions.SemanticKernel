@@ -4,7 +4,6 @@ using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Extentions;
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.SemanticKernel.Planning.Handlebars;
-using Json.More;
 using DurableFunctions.SemanticKernel.Agents.Plugins;
 
 
@@ -33,20 +32,28 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected override async Task<string?> ExecuteAgent(string input)
         {
 
-            await WebCliBridge.SendMessage("Generating prompt...<hr>");
+            // double answer = await _kernel.InvokeAsync<double>(
+            //                             "MathPlugin", "Sqrt",
+            //                                 new() {
+            //                                     { "number1", 12 }
+            //                                 }
+            //                             );
 
+            //await WebCliBridge.SendMessage(answer.ToString());
+            
+            await WebCliBridge.SendMessage("Generating prompt...<hr>");
             var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
             var plan = await planner.CreatePlanAsync(_kernel, input);
 
-            await WebCliBridge.SendMessage("Prompt: " + plan.Prompt);
+            await WebCliBridge.SendMessage(plan.Prompt);
             await WebCliBridge.SendMessage("Generating plan...<hr>");
             await WebCliBridge.SendMessage(plan.ToString());
 
             await WebCliBridge.SendMessage("Executing plan...<hr>");
-            
+
             var result = (await plan.InvokeAsync(_kernel, [])).Trim();
 
-          
+
             return result;
         }
     }

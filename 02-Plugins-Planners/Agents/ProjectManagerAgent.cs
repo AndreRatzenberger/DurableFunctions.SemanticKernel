@@ -3,7 +3,6 @@ using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Extentions;
 using DurableFunctions.SemanticKernel.Services;
-using Microsoft.SemanticKernel.Planning.Handlebars;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
