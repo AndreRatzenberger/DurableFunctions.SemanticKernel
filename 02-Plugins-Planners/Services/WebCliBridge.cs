@@ -19,10 +19,13 @@ namespace DurableFunctions.SemanticKernel.Services
     {
         private static readonly HttpClient httpClient = new();
 
-        public async static Task SendMessage(string input)
+        public async static Task SendMessage(string? input)
         {
             try
             {
+                if (string.IsNullOrEmpty(input))
+                    return;
+                    
                 var endpoint = WebCliConfiguration.GetEndpoint();
                 if (string.IsNullOrEmpty(endpoint))
                     return;

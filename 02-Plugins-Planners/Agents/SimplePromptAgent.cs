@@ -21,7 +21,7 @@ namespace DurableFunctions.SemanticKernel.Agents
                 .Build();
         }
 
-        [Function($"{nameof(SimplePrompAgent)}_{nameof(Start)}")]
+        [Function($"{nameof(SimplePrompAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
             return await StartTemplate(input, context);

@@ -19,6 +19,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             return response;
         }
 
+   
+
         protected abstract Task<string?> ExecuteAgent(string input);
 
         private async Task SendMessage(string message)
