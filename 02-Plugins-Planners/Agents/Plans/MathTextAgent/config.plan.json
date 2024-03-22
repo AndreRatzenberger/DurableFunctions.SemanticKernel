@@ -1,0 +1,19 @@
+{
+    "name": "MathTextAgent",
+    "input": "",
+    "skills": [
+        {
+            "name": "Plugins",
+            "folder": "Agents",
+            "isSemantic": true,
+            "functions": [
+                {
+                    "label": "ChainOfThought"
+                },
+                {
+                    "label": "MathPlugin"
+                }
+            ]
+        }
+    ]
+}

@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.6.3" />
     <PackageReference Include="Microsoft.SemanticKernel.Markdown" Version="1.6.3-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.6.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.6.3-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.6.3" />
   </ItemGroup>
   <ItemGroup>

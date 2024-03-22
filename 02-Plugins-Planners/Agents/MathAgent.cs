@@ -5,6 +5,10 @@ using DurableFunctions.SemanticKernel.Extentions;
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.SemanticKernel.Planning.Handlebars;
 using DurableFunctions.SemanticKernel.Agents.Plugins;
+using Microsoft.SemanticKernel.Planning;
+using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
@@ -20,6 +24,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             var builder = Kernel.CreateBuilder();
             builder.Plugins.AddFromPromptDirectory("Agents/Plugins");
             builder.Plugins.AddFromType<MathPlugin>();
+            builder.Services.AddLogging(c => c.AddDebug().SetMinimumLevel(LogLevel.Trace));
             _kernel = builder.WithOptionsConfiguration(_configurationService.GetCurrentConfiguration()).Build();
         }
 
@@ -32,29 +37,30 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected override async Task<string?> ExecuteAgent(string input)
         {
 
-            // double answer = await _kernel.InvokeAsync<double>(
-            //                             "MathPlugin", "Sqrt",
-            //                                 new() {
-            //                                     { "number1", 12 }
-            //                                 }
-            //                             );
-
-            //await WebCliBridge.SendMessage(answer.ToString());
             
-            await WebCliBridge.SendMessage("Generating prompt...<hr>");
-            var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
-            var plan = await planner.CreatePlanAsync(_kernel, input);
+           
+            var x = new FunctionCallingStepwisePlanner();
+            var r = await x.ExecuteAsync(_kernel, input);
 
-            await WebCliBridge.SendMessage(plan.Prompt);
-            await WebCliBridge.SendMessage("Generating plan...<hr>");
-            await WebCliBridge.SendMessage(plan.ToString());
+            await WebCliBridge.SendMessage(JsonConvert.SerializeObject(r.ChatHistory, Formatting.Indented));
+            return r.FinalAnswer;
 
-            await WebCliBridge.SendMessage("Executing plan...<hr>");
+            // await WebCliBridge.SendMessage("Generating prompt...<hr>");
+         
+           
+            // var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
+            // var plan = await planner.CreatePlanAsync(_kernel, input);
 
-            var result = (await plan.InvokeAsync(_kernel, [])).Trim();
+            // await WebCliBridge.SendMessage(plan.Prompt);
+            // await WebCliBridge.SendMessage("Generating plan...<hr>");
+            // await WebCliBridge.SendMessage(plan.ToString());
+
+            // await WebCliBridge.SendMessage("Executing plan...<hr>");
+          
+            // var result = (await plan.InvokeAsync(_kernel, [])).Trim();
 
 
-            return result;
+            //return result;
         }
     }
 }
