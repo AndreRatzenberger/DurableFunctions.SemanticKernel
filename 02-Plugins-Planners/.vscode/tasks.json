@@ -1,0 +1,196 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "clean (functions)",
+			"command": "dotnet",
+			"args": [
+				"clean",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary",
+				"Plugins-Planners.csproj"
+			],
+			"type": "process",
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "Delete .azurite folder",
+			"type": "process",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"& { if (Test-Path '${workspaceFolder}/.azurite') { Remove-Item -Path '${workspaceFolder}/.azurite' -Recurse -Force } }"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "build (functions)",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary",
+				"Plugins-Planners.csproj"
+			],
+			"type": "process",
+			"dependsOn": "Delete .azurite folder",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "clean release (functions)",
+			"command": "dotnet",
+			"args": [
+				"clean",
+				"--configuration",
+				"Release",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary",
+				"Plugins-Planners.csproj"
+			],
+			"type": "process",
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish (functions)",
+			"command": "dotnet",
+			"args": [
+				"publish",
+				"--configuration",
+				"Release",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary",
+				"Plugins-Planners.csproj"
+			],
+			"type": "process",
+			"dependsOn": "clean release (functions)",
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "python environment",
+			"dependsOn": "### Run (Function)",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-m",
+				"venv",
+				".venv"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "silent",
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "pip install requirements.txt",
+			"type": "shell",
+			"command": "pip",
+			"args": [
+				"install",
+				"-r",
+				"requirements.txt"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"dependsOn": "python environment",
+			"presentation": {
+				"reveal": "silent",
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "### Run (FlaskApp + Function)",
+			"type": "shell",
+			"command": "flask",
+			"args": [
+				"--app",
+				"app",
+				"run",
+				"--port",
+				"8001"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../00-FlaskWebCli"
+			},
+			"detail": "Starts azurite, flask app and function",
+			"isBackground": true,
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".*Running on http.*",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*Running on http.*",
+					"endsPattern": ".*Running on http.*"
+				}
+			},
+			"dependsOn": "pip install requirements.txt",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "### Run (Function)",
+			"type": "func",
+			"dependsOn": "run azurite",
+			"options": {
+				"cwd": "${workspaceFolder}/bin/Debug/net8.0"
+			},
+			"command": "host start --port 7071",
+			"detail": "Starts azurite and function",
+			"isBackground": true,
+			"problemMatcher": "$func-dotnet-watch",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "run azurite",
+			"type": "shell",
+			"dependsOn": "build (functions)",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"command": "azurite --silent --location .azurite --debug .azurite/debug.log",
+			"isBackground": true,
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".*Azurite Blob service is successfully listening at.*",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*Azurite Blob service is successfully listening at.*",
+					"endsPattern": ".*Azurite Blob service is successfully listening at.*"
+				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		}
+	]
+}

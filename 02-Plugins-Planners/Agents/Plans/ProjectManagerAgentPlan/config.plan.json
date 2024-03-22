@@ -1,0 +1,25 @@
+{
+    "name": "ProjectManagerAgentPlan",
+    "input": "",
+    "skills": [
+        {
+            "name": "Plugins",
+            "folder": "Agents",
+            "isSemantic": true,
+            "functions": [
+                {
+                    "label": "ChainOfThought"
+                },
+                {
+                    "label": "ComplexityChecker"
+                },
+                {
+                    "label": "ProjectPlanner"
+                },
+                {
+                    "label": "SimpleTasks"
+                }
+            ]
+        }
+    ]
+}
