@@ -23,6 +23,7 @@ var host = new HostBuilder()
         services.Configure<AzureOpenAIOptions>(hostingContext.Configuration.GetSection(nameof(AzureOpenAIOptions)));
         services.AddSingleton<SimplePrompAgent>();
         services.AddSingleton<ConfigurationService>();
+        services.AddLogging();
 
         LoggerConfiguration.ConfigureLogger("DURABLE AI");
         WebCliConfiguration.Configure(Environment.GetEnvironmentVariable("ExternalLogEndpoint"));

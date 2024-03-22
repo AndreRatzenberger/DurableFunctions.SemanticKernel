@@ -23,8 +23,9 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         protected abstract Task<string?> ExecuteAgent(string input);
 
-        private async Task SendMessage(string message)
+        internal async Task SendMessage(string? message)
         {
+            if (message == null) return;
             await WebCliBridge.SendMessage(message);
         }
     }

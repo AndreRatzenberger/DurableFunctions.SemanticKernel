@@ -36,7 +36,7 @@ namespace DurableFunctions.SemanticKernel.Agents
                 { "input", input }
             });
 
-            await WebCliBridge.SendMessage(responseProjectPlanner.GetValue<string>());
+            await SendMessage(responseProjectPlanner.GetValue<string>());
 
             var responseComplexity = await _kernel.InvokeAsync("Plugins", "ComplexityChecker", new() {
                 { "input", responseProjectPlanner }

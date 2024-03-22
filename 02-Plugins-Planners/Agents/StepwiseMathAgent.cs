@@ -40,8 +40,7 @@ namespace DurableFunctions.SemanticKernel.Agents
                 { "input", JsonConvert.SerializeObject(_kernel.Plugins) },
                 { "jsonContext", "The Plugins the Kernel has access too" }
             });
-
-            await WebCliBridge.SendMessage($"## Used Plugins: <br>{pluginMarkdown.GetValue<string>()} <hr>");
+            await SendMessage($"## Used Plugins: <br>{pluginMarkdown.GetValue<string>()} <hr>");
             
             var stepwisePlanner = new FunctionCallingStepwisePlanner();
             var result = await stepwisePlanner.ExecuteAsync(_kernel, input);
@@ -60,8 +59,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             });
 
           
-            await WebCliBridge.SendMessage(markdownHistory.GetValue<string>() + "<hr>");
-            await WebCliBridge.SendMessage("## FInal answer:");
+            await SendMessage(markdownHistory.GetValue<string>() + "<hr>");
+            await SendMessage("## FInal answer:");
             return result.FinalAnswer;
         }
     }
