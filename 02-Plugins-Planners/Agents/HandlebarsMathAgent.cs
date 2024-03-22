@@ -13,12 +13,12 @@ using Microsoft.Extensions.Logging;
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
-    public class MathAgent : BaseAgent
+    public class HandlebarsMathAgent : BaseAgent
     {
         private readonly ConfigurationService _configurationService;
         private Kernel _kernel;
 
-        public MathAgent(ConfigurationService configurationService)
+        public HandlebarsMathAgent(ConfigurationService configurationService)
         {
             _configurationService = configurationService;
             var builder = Kernel.CreateBuilder();
@@ -28,7 +28,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             _kernel = builder.WithOptionsConfiguration(_configurationService.GetCurrentConfiguration()).Build();
         }
 
-        [Function($"{nameof(MathAgent)}_Start")]
+        [Function($"{nameof(HandlebarsMathAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
             return await StartTemplate(input, context);
@@ -37,30 +37,19 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected override async Task<string?> ExecuteAgent(string input)
         {
 
-            
-           
-            var x = new FunctionCallingStepwisePlanner();
-            var r = await x.ExecuteAsync(_kernel, input);
-
-            await WebCliBridge.SendMessage(JsonConvert.SerializeObject(r.ChatHistory, Formatting.Indented));
-            return r.FinalAnswer;
-
-            // await WebCliBridge.SendMessage("Generating prompt...<hr>");
+            await WebCliBridge.SendMessage("Generating prompt...<hr>");
          
-           
-            // var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
-            // var plan = await planner.CreatePlanAsync(_kernel, input);
+            var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
+            var plan = await planner.CreatePlanAsync(_kernel, input);
 
-            // await WebCliBridge.SendMessage(plan.Prompt);
-            // await WebCliBridge.SendMessage("Generating plan...<hr>");
-            // await WebCliBridge.SendMessage(plan.ToString());
-
-            // await WebCliBridge.SendMessage("Executing plan...<hr>");
+            await WebCliBridge.SendMessage(plan.Prompt);
+            await WebCliBridge.SendMessage("Generating plan...<hr>");
+            await WebCliBridge.SendMessage(plan.ToString());
+            await WebCliBridge.SendMessage("Executing plan...<hr>");
           
-            // var result = (await plan.InvokeAsync(_kernel, [])).Trim();
+            var result = (await plan.InvokeAsync(_kernel, [])).Trim();
 
-
-            //return result;
+            return result;
         }
     }
 }

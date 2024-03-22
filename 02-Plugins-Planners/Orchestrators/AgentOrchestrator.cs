@@ -14,7 +14,7 @@ namespace DurableFunctions.SemanticKernel.Orchestrators
             var prompt = context.GetInput<string>();
 
             log.LogInformationWithMetadata($"{nameof(AgentOrchestrator)} started");
-            var response = await context.CallActivityAsync<string>($"{nameof(MathAgent)}_Start", prompt);
+            var response = await context.CallActivityAsync<string>($"{nameof(StepwiseMathAgent)}_Start", prompt);
             log.LogInformationWithMetadata($"{nameof(AgentOrchestrator)} finished");
             return response;
         }
