@@ -36,22 +36,31 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         protected override async Task<string?> ExecuteAgent(string input)
         {
+            var pluginMarkdown = await _kernel.InvokeAsync("Plugins", "JsonToMarkdown", new() {
+                { "input", JsonConvert.SerializeObject(_kernel.Plugins) },
+                { "jsonContext", "The Plugins the Kernel has access too" }
+            });
+
+            await WebCliBridge.SendMessage($"## Used Plugins: <br>{pluginMarkdown.GetValue<string>()} <hr>");
+            
             var stepwisePlanner = new FunctionCallingStepwisePlanner();
             var result = await stepwisePlanner.ExecuteAsync(_kernel, input);
 
             var jsonHistory = JsonConvert.SerializeObject(result.ChatHistory, Formatting.Indented);
 
-            await _kernel.InvokeAsync("FileIOPlugin", "WriteAsync", new() {
+            await _kernel.InvokeAsync("FileIOPlugin", "Write", new() {
                 { "content", jsonHistory },
-                { "path", "../../../stepwise.json" }
+                { "path", "../../../.dump/stepwise.json" }
             });
 
-            var markdownHistory = await _kernel.InvokeAsync("Plugins", "SummarizeStepwiseJson", new() {
-                { "input", jsonHistory }
+            var markdownHistory = await _kernel.InvokeAsync("Plugins", "JsonToMarkdown", new() {
+                { "input", jsonHistory },
+                { "importantValues", "Content, ChatResponseMessage.FunctionToolCalls, ModelId, Role" },
+                { "jsonContext", "Describe the execution plan of an AI trying to solve a problem" }
             });
 
           
-            await WebCliBridge.SendMessage(markdownHistory.ToString() + "<hr>");
+            await WebCliBridge.SendMessage(markdownHistory.GetValue<string>() + "<hr>");
             await WebCliBridge.SendMessage("## FInal answer:");
             return result.FinalAnswer;
         }
