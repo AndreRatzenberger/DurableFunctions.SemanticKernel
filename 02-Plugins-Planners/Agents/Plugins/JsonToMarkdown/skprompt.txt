@@ -8,7 +8,7 @@ so he can easily grasp the content of the json.
 Important values are:
 {{$importantValues}}
 
-Summarize the json so the user can easily understand the plan of the AI.
+Summarize the json so the user can easily understand the content.
 
 <RULE>
 ONLY OUTPUT YOUR RESULT AS MARKDOWN
@@ -25,6 +25,5 @@ DECIDE YOURSELF WHAT DATA TO INCLUDE OR OMMIT, BUT KEEP THE IMPORTAN VALUES IN M
 
 
 user:
-[INPUT]
 {{$input}}
-[END INPUT]
+
