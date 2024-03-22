@@ -1,0 +1,22 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Generates high level Project Plans",
+    "completion": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "input",
+                "description": "Input for this semantic function.",
+                "defaultValue": "I want to create a vscode extention which displays all python functions that are in my current workspace/folder and subfolders that have \"PyGraphVS=true\" in their docstring as nodes.  I can connect those nodes, so the output of one node flows as input to another. "
+            }
+        ]
+    },
+    "default_backends": []
+}
