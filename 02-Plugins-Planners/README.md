@@ -37,8 +37,13 @@ Before diving into the project, ensure you have the following tools and accounts
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_EXTENSION_VERSION": "~4",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "OpenAIOptions__ApiKey": "<Your_OpenAI_API_Key>",
-    "OpenAIOptions__ModelId": "gpt-4-turbo-preview"
+    "ExternalLogEndpoint": "http://127.0.0.1:8001/callback",
+    "UseAzureOpenAIOptions": "false",
+    "OpenAIOptions__ApiKey": "<YOUR OPENAI API KEY>",
+    "OpenAIOptions__ModelId": "<YOUR OPENAI API MODEL TO USE>",
+    "AzureOpenAIOptions__ApiKey": "<YOUR AZURE OPEN AI KEY>",
+    "AzureOpenAIOptions__DeploymentName": "<YOUR DEPLOYMENT NAME>",
+    "AzureOpenAIOptions__Endpoint": "<YOUR AZURE OPEN AI ENDPOINT>"
   }
 }
 ```
