@@ -15,9 +15,9 @@ namespace DurableFunctions.SemanticKernel.Orchestrators
 
             log.LogInformationWithMetadata($"{nameof(AgentOrchestrator)} started");
 
-            //_ = await context.CallActivityAsync<string>($"{nameof(ProjectManagerAgent)}_Start", prompt);
-
-            _ = await context.CallActivityAsync<string>($"{nameof(ProjectManagerAgent)}_Start", prompt);
+            //_ = await context.CallActivityAsync<string>($"{nameof(HandlebarsMathAgent)}_Start", prompt);
+            //_ = await context.CallActivityAsync<string>($"{nameof(StepwiseMathAgent)}_Start", prompt);
+            _ = await context.CallActivityAsync<string>($"{nameof(AgentSK_ArticleGenerator)}_Start", prompt);
             
             log.LogInformationWithMetadata($"{nameof(AgentOrchestrator)} finished");
         }

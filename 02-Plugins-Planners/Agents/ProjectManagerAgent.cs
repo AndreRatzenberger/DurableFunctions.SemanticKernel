@@ -37,12 +37,12 @@ namespace DurableFunctions.SemanticKernel.Agents
                 { "input", input }
             });
 
+            await SendMessage(responseProjectPlanner.GetValue<string>());
+
             await SendMessage("ComplexityEvaluator STARTED...");
             var responseComplexity = await _kernel.InvokeAsync("Plugins", "ComplexityChecker", new() {
                 { "input", responseProjectPlanner }
             });
-
-            await SendMessage(responseProjectPlanner.GetValue<string>());
 
             return responseComplexity.GetValue<string>();
         }

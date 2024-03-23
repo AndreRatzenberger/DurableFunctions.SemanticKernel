@@ -1,7 +1,7 @@
 {
     "schema": 1,
     "type": "completion",
-    "description": "Summarizes the process of the StepwisePlanner into readable markdown",
+    "description": "Estimate complexity of a projevt and suggest the backlog tiers to use",
     "completion": {
         "max_tokens": 4096,
         "temperature": 0.7,
@@ -13,7 +13,7 @@
         "parameters": [
             {
                 "name": "input",
-                "description": "StepwisePlanner json output",
+                "description": "Project Plan to evaluate",
                 "defaultValue": ""
             }
         ]

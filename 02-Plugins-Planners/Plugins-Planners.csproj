@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>SKEXP0003, SKEXP0004, SKEXP0011, SKEXP0052, SKEXP0060,SKEXP0050</NoWarn>
+    <NoWarn>SKEXP0001, SKEXP0010, SKEXP0003, SKEXP0004, SKEXP0011, SKEXP0052, SKEXP0060,SKEXP0050,SKEXP0101</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <!-- Workaround for M1 and M2 macs: ONLY WORKS WITH 2.41.0 
@@ -22,7 +22,9 @@
     <PackageReference Include="Microsoft.SemanticKernel.Markdown" Version="1.6.3-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.6.3-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.6.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.6.3" />
     <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.6.3-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Experimental.Agents" Version="1.6.3-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.6.3" />
   </ItemGroup>
   <ItemGroup>

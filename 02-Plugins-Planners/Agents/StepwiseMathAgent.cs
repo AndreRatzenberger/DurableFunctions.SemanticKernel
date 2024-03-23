@@ -43,7 +43,7 @@ namespace DurableFunctions.SemanticKernel.Agents
 
             await _kernel.InvokeAsync("FileIOPlugin", "Write", new() {
                 { "content", jsonHistory },
-                { "path", "../../../.dump/stepwise.json" }
+                { "path", "../../../stepwise.json" }
             });
 
             await SendMessage("## FInal answer:");
