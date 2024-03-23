@@ -8,6 +8,7 @@ with open('settings.json') as config_file:
     config = json.load(config_file)
 
 received_messages = []
+newData = False
 
 @app.route('/')
 def index():
@@ -22,13 +23,20 @@ def send_data():
 
 @app.route('/callback', methods=['POST'])
 def callback():
+    global newData
     data = request.data.decode('utf-8') 
     received_messages.append(data)  
+    newData = True
     return 'Success', 200
 
 @app.route('/fetch-callback-data', methods=['GET'])
 def fetch_callback_data():
-    return jsonify(received_messages)
+    global newData
+    if newData == True:
+        newData = False
+        return jsonify(received_messages)
+    else:
+        return 'No new data', 200
 
 @app.route('/clear', methods=['DELETE'])
 def clear():

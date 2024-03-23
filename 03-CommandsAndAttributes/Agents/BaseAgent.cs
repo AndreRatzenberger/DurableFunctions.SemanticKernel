@@ -9,12 +9,12 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected async Task<string?> StartTemplate(string input, FunctionContext context)
         {
             var log = context.GetLogger(GetType().Name);
-            await SendMessage($"<hr><b>{GetType().Name} STARTED</b><hr>");
+            await SendMessage($"## <hr><b>{GetType().Name} STARTED</b><hr>");
 
             var response = await ExecuteAgent(input);
             
             await SendMessage($"<br>{response}<br><br>");
-            await SendMessage($"<hr><b>{GetType().Name} FINISHED</b><hr>");
+            await SendMessage($"## <hr><b>{GetType().Name} FINISHED</b><hr>");
             
             return response;
         }

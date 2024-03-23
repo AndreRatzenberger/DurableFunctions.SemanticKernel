@@ -36,12 +36,7 @@ namespace DurableFunctions.SemanticKernel.Agents
                 { "input", input }
             });
 
-            var html = await _kernel.InvokeAsync("Plugins", "AnythingToHtml", new() {
-                { "inputFile", responseProjectPlanner.GetValue<string>() }
-            });
-
-            var htmlString =html.GetValue<string>();
-            await SendMessage(htmlString);
+            await SendMessage(responseProjectPlanner.GetValue<string>());
 
             var responseComplexity = await _kernel.InvokeAsync("Plugins", "ComplexityChecker", new() {
                 { "input", responseProjectPlanner }
@@ -49,10 +44,6 @@ namespace DurableFunctions.SemanticKernel.Agents
 
             var result = responseComplexity.GetValue<string>();
 
-            html = await _kernel.InvokeAsync("Plugins", "AnythingToHtml", new() {
-                { "inputFile", result}
-            });
-            result = html.GetValue<string>();
             return result;
         }
     }
