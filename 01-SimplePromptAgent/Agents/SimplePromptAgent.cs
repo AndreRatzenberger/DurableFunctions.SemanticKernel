@@ -25,13 +25,13 @@ namespace DurableFunctions.SemanticKernel.Agents
         [Function($"{nameof(SimplePrompAgent)}_{nameof(Start)}")]
         public async Task<string?> Start([ActivityTrigger] string input)
         {
-            await WebCliBridge.SendMessage($"## <hr><b>{nameof(SimplePrompAgent)} STARTED</b><hr>");
+            await WebCliBridge.SendMessage($"<hr><b>{nameof(SimplePrompAgent)} STARTED</b><hr>");
 
             var response = await _kernel.InvokePromptAsync(input);
             var result = response.GetValue<string>();
 
             await WebCliBridge.SendMessage($"<br>{result}<br><br><hr>");
-            await WebCliBridge.SendMessage($"## <b>{nameof(SimplePrompAgent)}  FINISHED</b><hr>");
+            await WebCliBridge.SendMessage($"<b>{nameof(SimplePrompAgent)}  FINISHED</b><hr>");
             return result;
         }
 
