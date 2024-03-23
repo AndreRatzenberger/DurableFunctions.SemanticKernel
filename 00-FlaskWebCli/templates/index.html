@@ -96,6 +96,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -144,33 +145,15 @@
           }
         };
 
-        var converter = new showdown.Converter();
-        function fetchCallbackData() {
-          fetch("/fetch-callback-data")
-            .then((response) => response.text())
-            .then((text) => {
-              if (text === "No new data") {
-                return;
-              }
-              return JSON.parse(text);
-            })
-            .then((data) => {
-              if (!data) {
-                return;
-              }
-              var cli = document.getElementById("cli");
-              cli.innerHTML = "";
-              data.forEach(function (msg) {
-                cli.innerHTML += msg + "<br>";
-              });
-            })
-            .catch((error) =>
-              console.error("Error fetching callback data:", error)
-            );
-        }
-        // var html = converter.makeHtml(msg);
-        // html = html.replace(/\n/g, '<br>');
-        setInterval(fetchCallbackData, 1000); // Refresh
+        var socket = io(); // Connect to the WebSocket server
+
+        socket.on("callback_data", function (data) {
+          var cli = document.getElementById("cli");
+          cli.innerHTML = ""; // Clear existing content
+          data.forEach(function (msg) {
+            cli.innerHTML += msg + "<br>"; // Append each message
+          });
+        });
       });
     </script>
   </body>

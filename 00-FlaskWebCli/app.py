@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, render_template
+from flask_socketio import SocketIO, emit
 import requests
 import json
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 with open('settings.json') as config_file:
     config = json.load(config_file)
@@ -23,20 +25,22 @@ def send_data():
 
 @app.route('/callback', methods=['POST'])
 def callback():
-    global newData
     data = request.data.decode('utf-8') 
-    received_messages.append(data)  
-    newData = True
+    received_messages.append(data)
+    socketio.emit('callback_data', received_messages) 
     return 'Success', 200
 
-@app.route('/fetch-callback-data', methods=['GET'])
-def fetch_callback_data():
-    global newData
-    if newData == True:
-        newData = False
-        return jsonify(received_messages)
-    else:
-        return 'No new data', 200
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+@socketio.on('fetch_data')
+def handle_fetch_data():
+    emit('callback_data', received_messages)
 
 @app.route('/clear', methods=['DELETE'])
 def clear():
@@ -44,4 +48,4 @@ def clear():
     return 'Success', 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
