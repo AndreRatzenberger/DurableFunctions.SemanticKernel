@@ -3,6 +3,7 @@
 
 using DurableFunctions.SemanticKernel.Agents.Plugins;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Converters;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Experimental.Agents;
 
@@ -17,18 +18,43 @@ namespace DurableFunctions.SemanticKernel.Agents
         }
         protected override async Task<string?> ExecuteAgent(string input)
         {
-            IAgent storyGenerator = await CreateStoryGeneratorAsync();
+            IAgent topicGenerator = await CreateASubTopicsAsync();
 
-            await foreach (IChatMessage message in storyGenerator.InvokeAsync(input))
+            var result = await topicGenerator.AsPlugin().InvokeAsync(input);
+            result = result.Replace("\\n", "");
+            result = result.Replace(input, "", StringComparison.InvariantCultureIgnoreCase);
+            var topics = JsonDataConverter.Default.Deserialize<string[]>(result);
+            var wholeArticle = "";  
+            foreach (var topic in topics)
             {
-                await SendMessage($"[{message.Id}]");
-                await SendMessage($"{message.Role}:<br> {message.Content}");
+                IAgent agent = await CreateArticleGeneratorAsync();
+                var agentResult = await agent.AsPlugin().InvokeAsync(input + " It should be about this topic:" + topic);
+                wholeArticle += agentResult;
             }
 
-            return "Article generation complete!";
+            return wholeArticle;
         }
 
-        private static async Task<IAgent> CreateStoryGeneratorAsync()
+         private static async Task<IAgent> CreateASubTopicsAsync()
+        {
+            return
+                Track(
+                    await new AgentBuilder()
+                        .WithOpenAIChatCompletion(Environment.GetEnvironmentVariable("OpenAIOptions__ModelId"), Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey"))
+                        .WithInstructions(@"Split the topic at hand into three sub-topics. Return this list as a json in exactly the following format: ['subtopic1', 'subtopic2', 'subtopic3'].
+                            <RULE>
+                            ONLY RETURN THE JSON. NO FLUFF OR ADDITIONAL INFORMATION. AND NO ENCAPSULATION.
+                            </RULE>
+                            <RULE>
+                            BEFORE EVERY STEP SEND A DETAILED STATUS MESSAGE WITH THE STATUSPLUGIN SO THE USER KNOWS IF YOU'RE STILL AT WORK!
+                            </RULE>")
+                        .WithName("MasterAgent")
+                        .WithDescription("Article Publisher")
+                        .WithPlugin(KernelPluginFactory.CreateFromType<StatusPlugin>())
+                        .BuildAsync());
+        }
+
+        private static async Task<IAgent> CreateArticleGeneratorAsync()
         {
             var outline = await CreateOutlineGeneratorAsync();
             var research = await CreateResearchGeneratorAsync();
@@ -43,8 +69,8 @@ namespace DurableFunctions.SemanticKernel.Agents
                             <RULE>
                             BEFORE EVERY STEP SEND A DETAILED STATUS MESSAGE WITH THE STATUSPLUGIN SO THE USER KNOWS IF YOU'RE STILL AT WORK!
                             </RULE>")
-                        .WithName("Amazing Author")
-                        .WithDescription("Author a short story on a given topic.")
+                        .WithName("Article Author")
+                        .WithDescription("Author an article on a given topic.")
                         .WithPlugin(outline.AsPlugin())
                         .WithPlugin(research.AsPlugin())
                         .WithPlugin(KernelPluginFactory.CreateFromType<StatusPlugin>())
