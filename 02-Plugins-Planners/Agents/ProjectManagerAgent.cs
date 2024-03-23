@@ -32,28 +32,19 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         protected override async Task<string?> ExecuteAgent(string input)
         {
+            await SendMessage("ProjectPlanner STARTED...");
             var responseProjectPlanner = await _kernel.InvokeAsync("Plugins", "ProjectPlanner", new() {
                 { "input", input }
             });
 
-            var html = await _kernel.InvokeAsync("Plugins", "AnythingToHtml", new() {
-                { "inputFile", responseProjectPlanner.GetValue<string>() }
-            });
-
-            var htmlString =html.GetValue<string>();
-            await SendMessage(htmlString);
-
+            await SendMessage("ComplexityEvaluator STARTED...");
             var responseComplexity = await _kernel.InvokeAsync("Plugins", "ComplexityChecker", new() {
                 { "input", responseProjectPlanner }
             });
 
-            var result = responseComplexity.GetValue<string>();
+            await SendMessage(responseProjectPlanner.GetValue<string>());
 
-            html = await _kernel.InvokeAsync("Plugins", "AnythingToHtml", new() {
-                { "inputFile", result}
-            });
-            result = html.GetValue<string>();
-            return result;
+            return responseComplexity.GetValue<string>();
         }
     }
 }

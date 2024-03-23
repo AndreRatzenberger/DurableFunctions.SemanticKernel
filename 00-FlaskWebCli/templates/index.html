@@ -95,7 +95,7 @@
     </form>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
     <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 
     <script>
@@ -146,12 +146,14 @@
         };
 
         var socket = io(); // Connect to the WebSocket server
+        var converter = new showdown.Converter();
 
         socket.on("callback_data", function (data) {
           var cli = document.getElementById("cli");
           cli.innerHTML = ""; // Clear existing content
           data.forEach(function (msg) {
-            cli.innerHTML += msg + "<br>"; // Append each message
+            msg = converter.makeHtml(msg);
+            cli.innerHTML += msg; // Append each message
           });
         });
       });

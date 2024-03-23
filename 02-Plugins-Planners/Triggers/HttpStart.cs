@@ -8,7 +8,6 @@ namespace DurableFunctions.SemanticKernel.Functions
 {
     static class HttpStart
     {
-
         [Function(nameof(StartSemanticKernel))]
         public static async Task<HttpResponseData> StartSemanticKernel(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req,
