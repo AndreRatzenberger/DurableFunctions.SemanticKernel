@@ -16,16 +16,6 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         public AgentSK(ConfigurationService configurationService)
         {
-        var settings = new OpenAIPromptExecutionSettings
-        {
-            MaxTokens = 1500,
-            Temperature = 0.7,
-            TopP = 1.0,
-            PresencePenalty = 0.0,
-            FrequencyPenalty = 0.0,
-        };
-
-        
             _agent = new AgentBuilder()
                     .WithOpenAIChatCompletion(Environment.GetEnvironmentVariable("OpenAIOptions__ModelId"), Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey"))
                     .WithName("ProjectPlanner")

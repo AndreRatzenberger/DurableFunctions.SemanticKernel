@@ -19,7 +19,7 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected override async Task<string?> ExecuteAgent(string input)
         {
             IAgent topicGenerator = await CreateASubTopicsAsync();
-
+           
             var result = await topicGenerator.AsPlugin().InvokeAsync(input);
             result = result.Replace("\\n", "");
             result = result.Replace(input, "", StringComparison.InvariantCultureIgnoreCase);
