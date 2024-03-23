@@ -8,7 +8,7 @@
 				"clean",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"Plugins-Planners.csproj"
+				"CommandsAndAttributes.csproj"
 			],
 			"type": "process",
 			"problemMatcher": "$msCompile"
@@ -31,7 +31,7 @@
 				"build",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"Plugins-Planners.csproj"
+				"CommandsAndAttributes.csproj"
 			],
 			"type": "process",
 			"dependsOn": "Delete .azurite folder",
@@ -50,7 +50,7 @@
 				"Release",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"Plugins-Planners.csproj"
+				"CommandsAndAttributes.csproj"
 			],
 			"type": "process",
 			"problemMatcher": "$msCompile"
@@ -64,7 +64,7 @@
 				"Release",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary",
-				"Plugins-Planners.csproj"
+				"CommandsAndAttributes.csproj"
 			],
 			"type": "process",
 			"dependsOn": "clean release (functions)",

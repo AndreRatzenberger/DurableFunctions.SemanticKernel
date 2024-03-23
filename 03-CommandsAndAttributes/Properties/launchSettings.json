@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Plugins-Planners": {
+    "CommandsAndAttributes": {
       "commandName": "Project",
       "commandLineArgs": "--port 7049",
       "launchBrowser": false
