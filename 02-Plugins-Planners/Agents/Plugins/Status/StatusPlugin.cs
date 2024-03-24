@@ -12,7 +12,7 @@ namespace DurableFunctions.SemanticKernel.Agents.Plugins
             [Description("The name of the caller/agent - REQUIRED")] string agentName
         )
         {
-            await WebCliBridge.SendMessage($"{agentName} status - {DateTime.Now}: {status}");
+            await WebCliBridge.SendMessage($"{DateTime.Now} - {agentName}: {status}");
         }
     }
 }
