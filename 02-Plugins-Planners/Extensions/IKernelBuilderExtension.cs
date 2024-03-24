@@ -15,14 +15,14 @@ namespace DurableFunctions.SemanticKernel.Extentions
             {
                 kernelBuilder
                .AddOpenAIChatCompletion(modelId: config.Value.ModelId, apiKey: config.Value.ApiKey);
-               _ = WebCliBridge.SendMessage("<br>OpenAI model loaded");
+               _ = WebCliBridge.SendMessage($"<br>OpenAI model {config.Value.ModelId} loaded");
             }
 
             if (options is IOptions<AzureOpenAIOptions> azureConfig)
             {
                 kernelBuilder
                .AddAzureOpenAIChatCompletion(deploymentName: azureConfig.Value.DeploymentName, endpoint: azureConfig.Value.Endpoint, apiKey: azureConfig.Value.ApiKey);
-                _ = WebCliBridge.SendMessage("<br>Azure OpenAI model loaded");
+                _ = WebCliBridge.SendMessage($"<br>Azure OpenAI model {azureConfig.Value.DeploymentName} loaded");
             }
 
             return kernelBuilder;

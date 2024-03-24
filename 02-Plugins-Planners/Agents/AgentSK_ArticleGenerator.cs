@@ -3,7 +3,6 @@
 
 using DurableFunctions.SemanticKernel.Agents.Plugins;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.DurableTask.Converters;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Experimental.Agents;
 
@@ -18,40 +17,11 @@ namespace DurableFunctions.SemanticKernel.Agents
         }
         protected override async Task<string?> ExecuteAgent(string input)
         {
-            IAgent topicGenerator = await CreateASubTopicsAsync();
-           
-            var result = await topicGenerator.AsPlugin().InvokeAsync(input);
-            result = result.Replace("\\n", "");
-            result = result.Replace(input, "", StringComparison.InvariantCultureIgnoreCase);
-            var topics = JsonDataConverter.Default.Deserialize<string[]>(result);
-            var wholeArticle = "";  
-            foreach (var topic in topics)
-            {
-                IAgent agent = await CreateArticleGeneratorAsync();
-                var agentResult = await agent.AsPlugin().InvokeAsync(input + " It should be about this topic:" + topic);
-                wholeArticle += agentResult;
-            }
 
-            return wholeArticle;
-        }
-
-         private static async Task<IAgent> CreateASubTopicsAsync()
-        {
-            return
-                Track(
-                    await new AgentBuilder()
-                        .WithOpenAIChatCompletion(Environment.GetEnvironmentVariable("OpenAIOptions__ModelId"), Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey"))
-                        .WithInstructions(@"Split the topic at hand into three sub-topics. Return this list as a json in exactly the following format: ['subtopic1', 'subtopic2', 'subtopic3'].
-                            <RULE>
-                            ONLY RETURN THE JSON. NO FLUFF OR ADDITIONAL INFORMATION. AND NO ENCAPSULATION.
-                            </RULE>
-                            <RULE>
-                            BEFORE EVERY STEP SEND A DETAILED STATUS MESSAGE WITH THE STATUSPLUGIN SO THE USER KNOWS IF YOU'RE STILL AT WORK!
-                            </RULE>")
-                        .WithName("MasterAgent")
-                        .WithDescription("Article Publisher")
-                        .WithPlugin(KernelPluginFactory.CreateFromType<StatusPlugin>())
-                        .BuildAsync());
+            IAgent agent = await CreateArticleGeneratorAsync();
+            var agentResult = await agent.AsPlugin().InvokeAsync(input);
+           ;
+            return agentResult;
         }
 
         private static async Task<IAgent> CreateArticleGeneratorAsync()
