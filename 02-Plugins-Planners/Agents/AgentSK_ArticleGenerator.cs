@@ -7,6 +7,15 @@ namespace DurableFunctions.SemanticKernel.Agents
 {
     public class AgentSK_ArticleGenerator : BaseAgent
     {
+        private readonly string _modelId;
+        private string _apiKey;
+
+        public AgentSK_ArticleGenerator()
+        {
+            _modelId = Environment.GetEnvironmentVariable("OpenAIOptions__ModelId") ?? throw new ArgumentNullException("OpenAIOptions__ModelId");
+            _apiKey = Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey") ?? throw new ArgumentNullException("OpenAIOptions__ApiKey");
+        }
+
         [Function($"{nameof(AgentSK_ArticleGenerator)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
@@ -21,7 +30,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             return agentResult;
         }
 
-        private static async Task<IAgent> CreateArticleGeneratorAsync()
+        private async Task<IAgent> CreateArticleGeneratorAsync()
         {
             var outline = await CreateOutlineGeneratorAsync();
             var research = await CreateResearchGeneratorAsync();
@@ -29,7 +38,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             return
                 Track(
                     await new AgentBuilder()
-                        .WithOpenAIChatCompletion(Environment.GetEnvironmentVariable("OpenAIOptions__ModelId"), Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey"))
+                        .WithOpenAIChatCompletion(_modelId, _apiKey)
                         .WithInstructions(@"You write very long opinionated articles that are published online, and are funny, sarcastic, and showcasing a engaging writing style that makes the reader want to read more and laugh. Even if the topic is serious.
                             Use an outline to generate an article with one section of prose for each top-level outline element.  
                             Each section is based on research with a minimum of 200 words.
@@ -44,12 +53,12 @@ namespace DurableFunctions.SemanticKernel.Agents
                         .BuildAsync());
         }
 
-        private static async Task<IAgent> CreateOutlineGeneratorAsync()
+        private async Task<IAgent> CreateOutlineGeneratorAsync()
         {
             return
                 Track(
                     await new AgentBuilder()
-                        .WithOpenAIChatCompletion(Environment.GetEnvironmentVariable("OpenAIOptions__ModelId"), Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey"))
+                        .WithOpenAIChatCompletion(_modelId, _apiKey)
                         .WithInstructions(@"Produce an single-level outline (no child elements) based on the given topic with at most 5 sections.<RULE>
                             BEFORE EVERY STEP SEND A DETAILED STATUS MESSAGE WITH THE STATUSPLUGIN SO THE USER KNOWS IF YOU'RE STILL AT WORK! USE 'OutlineGenerator' AS THE AGENT NAME.
                             </RULE>")
@@ -59,12 +68,12 @@ namespace DurableFunctions.SemanticKernel.Agents
                         .BuildAsync());
         }
 
-        private static async Task<IAgent> CreateResearchGeneratorAsync()
+        private async Task<IAgent> CreateResearchGeneratorAsync()
         {
             return
                 Track(
                     await new AgentBuilder()
-                        .WithOpenAIChatCompletion(Environment.GetEnvironmentVariable("OpenAIOptions__ModelId"), Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey"))
+                        .WithOpenAIChatCompletion(_modelId, _apiKey)
                         .WithInstructions(@"Provide insightful research that supports the given topic based on your knowledge of the outline topic.
                             <RULE>
                             BEFORE EVERY STEP SEND A DETAILED STATUS MESSAGE WITH THE STATUSPLUGIN SO THE USER KNOWS IF YOU'RE STILL AT WORK! USE 'Researcher' AS THE AGENT NAME.

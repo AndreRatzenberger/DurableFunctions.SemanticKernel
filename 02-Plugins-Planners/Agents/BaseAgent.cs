@@ -7,6 +7,7 @@ namespace DurableFunctions.SemanticKernel.Agents
 {
     public abstract class BaseAgent
     {
+       
         protected async Task<string?> StartTemplate(string input, FunctionContext context)
         {
             var log = context.GetLogger(GetType().Name);
