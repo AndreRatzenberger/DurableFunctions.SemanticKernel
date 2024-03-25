@@ -17,7 +17,7 @@ namespace DurableFunctions.SemanticKernel.Agents
         private string? _projectPlannerResponse;
         private List<UserStory> _userStories = [];
         private List<ProjectTask> _projectTasks = [];
-        private List<ProjectFiles> _projectFiles = [];
+        private List<ProjectFile> _projectFiles = [];
 
         public ProjectAgent(ConfigurationService configurationService)
         {
@@ -151,7 +151,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             return await _kernel.InvokeAsync("Plugins", functionName, parameters);
         }
 
-        private async Task GenerateFiles(List<ProjectFiles> projectFiles, Guid guid)
+        private async Task GenerateFiles(List<ProjectFile> projectFiles, Guid guid)
         {
             string baseFolderPath = Path.Combine(_baseFolderPath, guid.ToString(), "repo");
             Directory.CreateDirectory(baseFolderPath);
@@ -188,7 +188,7 @@ namespace DurableFunctions.SemanticKernel.Agents
                 if (File.Exists(repoJsonPath))
                 {
                     var repoContent = await File.ReadAllTextAsync(repoJsonPath);
-                    var repoFiles = JsonSerializer.Deserialize<List<ProjectFiles>>(repoContent);
+                    var repoFiles = JsonSerializer.Deserialize<List<ProjectFile>>(repoContent);
                     if (repoFiles != null)
                         _projectFiles = repoFiles;
                 }
@@ -226,7 +226,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             string filePath = Path.Combine(folderPath, name);
             await File.WriteAllTextAsync(filePath, input);
         }
-        private async Task<List<ProjectFiles>> GenerateValidRepo(string? input)
+        private async Task<List<ProjectFile>> GenerateValidRepo(string? input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return [];
@@ -238,10 +238,10 @@ namespace DurableFunctions.SemanticKernel.Agents
             {
                 try
                 {
-                    var jsonResult = JsonSerializer.Deserialize<List<ProjectFiles>>(input);
+                    var jsonResult = JsonSerializer.Deserialize<List<ProjectFile>>(input);
                     if (jsonResult != null) return jsonResult;
 
-                    var jsonResultList = JsonSerializer.Deserialize<ProjectFilesList>(input);
+                    var jsonResultList = JsonSerializer.Deserialize<ProjectFileList>(input);
                     if (jsonResultList != null) return jsonResultList.ProjectFiles;
 
                     throw new InvalidOperationException("Deserialization returned null.");

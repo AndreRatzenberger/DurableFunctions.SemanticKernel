@@ -6,14 +6,14 @@ namespace DurableFunctions.SemanticKernel.Agents.Models
         public string Title { get; set; } = string.Empty;
         public int StoryPoints { get; set; }
     }
-    public class ProjectFiles
+    public class ProjectFile
     {
         public string FileName { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
     }
-    public class ProjectFilesList
+    public class ProjectFileList
     {
-        public List<ProjectFiles> ProjectFiles { get; set; } = [];
+        public List<ProjectFile> ProjectFiles { get; set; } = [];
     }
     public class ProjectTask
     {
