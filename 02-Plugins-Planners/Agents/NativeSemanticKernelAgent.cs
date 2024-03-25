@@ -5,18 +5,19 @@ using Microsoft.SemanticKernel.Experimental.Agents;
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
-    public class AgentSK_ArticleGenerator : BaseAgent
+    //Agent Implementation with SemanticKernel's native Agents (still experimental)
+    public class NativeSemanticKernelAgent : BaseAgent
     {
         private readonly string _modelId;
         private string _apiKey;
 
-        public AgentSK_ArticleGenerator()
+        public NativeSemanticKernelAgent()
         {
             _modelId = Environment.GetEnvironmentVariable("OpenAIOptions__ModelId") ?? throw new ArgumentNullException("OpenAIOptions__ModelId");
             _apiKey = Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey") ?? throw new ArgumentNullException("OpenAIOptions__ApiKey");
         }
 
-        [Function($"{nameof(AgentSK_ArticleGenerator)}_Start")]
+        [Function($"{nameof(NativeSemanticKernelAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
             return await StartTemplate(input, context);
