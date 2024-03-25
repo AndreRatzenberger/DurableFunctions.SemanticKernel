@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Agents;
-using DurableFunctions.SemanticKernel.Extentions;
 using DurableFunctions.SemanticKernel.Services;
+using DurableFunctions.SemanticKernel.Extensions;
 
 var host = new HostBuilder()
     .ConfigureAppConfiguration((hostingContext, config) =>

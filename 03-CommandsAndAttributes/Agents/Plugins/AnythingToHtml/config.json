@@ -1,7 +1,7 @@
 {
     "schema": 1,
     "type": "completion",
-    "description": "Summarizes the process of the StepwisePlanner into readable markdown",
+    "description": "Takes any file and transforms it into beautiful html",
     "completion": {
         "max_tokens": 4096,
         "temperature": 0.7,
@@ -12,8 +12,8 @@
     "input": {
         "parameters": [
             {
-                "name": "input",
-                "description": "StepwisePlanner json output",
+                "name": "inputFile",
+                "description": "The file that should get evaluated and transformed into html",
                 "defaultValue": ""
             }
         ]

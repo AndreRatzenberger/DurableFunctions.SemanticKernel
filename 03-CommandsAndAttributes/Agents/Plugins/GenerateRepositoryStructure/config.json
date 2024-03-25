@@ -1,0 +1,40 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Generates a repository structure for a new project, based on a project plan, user stories, and tasks.",
+    "completion": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "inputHighLevelProjectPlan",
+                "description": "High Level Project Plan",
+                "defaultValue": ""
+            },
+            {
+                "name": "inputUserStories",
+                "description": "User Stories",
+                "defaultValue": ""
+            },
+            {
+                "name": "inputTasks",
+                "description": "Tasks",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "output": {
+        "parameters": [
+            {
+                "name": "output",
+                "description": "Generated Repository Structure"
+            }
+        ]
+    },
+    "default_backends": []
+}

@@ -1,1 +1,0 @@
-A farmer has two types of animals on his farm: chickens and cows. If there are a total of 50 animals on the farm and the animals together have 140 legs, how many chickens and how many cows are there on the farm?

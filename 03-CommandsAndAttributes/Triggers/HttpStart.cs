@@ -1,16 +1,12 @@
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
-using DurableFunctions.SemanticKernel.Services;
 using DurableFunctions.SemanticKernel.Orchestrators;
-using Microsoft.DurableTask.Entities;
-using IronPython.Modules;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {
     static class HttpStart
     {
-
         [Function(nameof(StartSemanticKernel))]
         public static async Task<HttpResponseData> StartSemanticKernel(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req,
@@ -23,11 +19,7 @@ namespace DurableFunctions.SemanticKernel.Functions
             {
                 requestBody = await reader.ReadToEndAsync();
             }
-
-            var entityId = new EntityInstanceId(nameof(AgentState), "singleton");
-        
-            await client.Entities.SignalEntityAsync(entityId, nameof(AgentState.AddCommand), requestBody);
-            var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(AgentOrchestrator), entityId);
+            var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(AgentOrchestrator), requestBody);
             return client.CreateCheckStatusResponse(req, instanceId);
         }
     }
