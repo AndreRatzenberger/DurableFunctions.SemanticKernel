@@ -11,6 +11,7 @@ namespace DurableFunctions.SemanticKernel.Agents
 {
     public class ProjectAgent : BaseAgent
     {
+        private readonly string _baseFolderPath = Path.Combine("..", "..", "..", ".generated");
         private readonly ConfigurationService _configurationService;
         private Kernel _kernel;
         private string? _projectPlannerResponse;
@@ -42,6 +43,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             //to continue the process where it was left off
             var guid = await ProcessInputGuid(input);
 
+            await SendMessage($"**Your Agent Run ID: {guid}**");
+
             await SendMessage("**ProjectPlanner STARTED...**");
             await EnsureProjectPlannerResponse(input);
 
@@ -59,7 +62,7 @@ namespace DurableFunctions.SemanticKernel.Agents
             await SendMessage("**Repo Initializer STARTED...**");
             await ProcessRepoInitializer(guid, jsonOptions);
 
-            return JsonHelpers.SerializeJsonToMarkdown(_projectFiles, jsonOptions);
+            return $"**Your Agent Run ID: {guid}**";
         }
 
         private async Task<Guid> ProcessInputGuid(string input)
@@ -97,14 +100,14 @@ namespace DurableFunctions.SemanticKernel.Agents
             {
                 await SendMessage($"**Task designer for '{userStory.Id} - {userStory.Title}' STARTED...**");
                 var taskList = _projectTasks.Where(task => task.UserStoryId == userStory.Id).ToList();
-                if (taskList.Any())
+                if (taskList.Count != 0)
                 {
-                    await SendMessage(JsonHelpers.SerializeJson(taskList, jsonOptions));
+                    await SendMessage(JsonHelpers.SerializeJsonToMarkdown(taskList, jsonOptions));
                     continue;
                 }
 
                 var tasks = await GenerateAndProcessTasks(userStory);
-                await SendMessage(JsonHelpers.SerializeJson(tasks, jsonOptions));
+                await SendMessage(JsonHelpers.SerializeJsonToMarkdown(tasks, jsonOptions));
                 await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(tasks, jsonOptions), $"task_{userStory.Id}.json");
                 _projectTasks.AddRange(tasks);
             }
@@ -125,15 +128,19 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         private async Task ProcessRepoInitializer(Guid guid, JsonSerializerOptions jsonOptions)
         {
-            var response = await InvokeFunction("GenerateRepositoryStructure", new KernelArguments
+            if (_projectFiles.Count == 0)
             {
-                { "inputHighLevelProjectPlan", _projectPlannerResponse },
-                { "inputUserStories", JsonHelpers.SerializeJson(_userStories) },
-                { "inputTasks", JsonHelpers.SerializeJson(_projectTasks) }
-            });
+                var response = await InvokeFunction("GenerateRepositoryStructure", new KernelArguments
+                {
+                    { "inputHighLevelProjectPlan", _projectPlannerResponse },
+                    { "inputUserStories", JsonHelpers.SerializeJson(_userStories) },
+                    { "inputTasks", JsonHelpers.SerializeJson(_projectTasks) }
+                });
 
-            var responseString = response.GetValue<string>();
-            _projectFiles = await GenerateValidRepo(responseString);
+                var responseString = response.GetValue<string>();
+                _projectFiles = await GenerateValidRepo(responseString);
+            }
+
             await SendMessage(JsonHelpers.SerializeJsonToMarkdown(_projectFiles, jsonOptions));
             await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(_projectFiles, jsonOptions), "repo.json");
             await GenerateFiles(_projectFiles, guid);
@@ -146,7 +153,7 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         private async Task GenerateFiles(List<ProjectFiles> projectFiles, Guid guid)
         {
-            string baseFolderPath = Path.Combine("..", "..", "..", ".dump", guid.ToString(), "repo");
+            string baseFolderPath = Path.Combine(_baseFolderPath, guid.ToString(), "repo");
             Directory.CreateDirectory(baseFolderPath);
             foreach (var file in projectFiles)
             {
@@ -167,7 +174,7 @@ namespace DurableFunctions.SemanticKernel.Agents
         }
         private async Task LoadFiles(Guid guid)
         {
-            string folderPath = Path.Combine("..", "..", "..", ".dump", guid.ToString());
+            string folderPath = Path.Combine(_baseFolderPath, guid.ToString());
             _projectTasks = [];
             _userStories = [];
 
@@ -176,6 +183,15 @@ namespace DurableFunctions.SemanticKernel.Agents
                 string projectPlanPath = Path.Combine(folderPath, "ProjectPlan.md");
                 if (File.Exists(projectPlanPath))
                     _projectPlannerResponse = await File.ReadAllTextAsync(projectPlanPath);
+
+                string repoJsonPath = Path.Combine(folderPath, "repo.json");
+                if (File.Exists(repoJsonPath))
+                {
+                    var repoContent = await File.ReadAllTextAsync(repoJsonPath);
+                    var repoFiles = JsonSerializer.Deserialize<List<ProjectFiles>>(repoContent);
+                    if (repoFiles != null)
+                        _projectFiles = repoFiles;
+                }
 
                 string userStoriesPath = Path.Combine(folderPath, "userstories.json");
                 if (File.Exists(userStoriesPath))
@@ -203,9 +219,9 @@ namespace DurableFunctions.SemanticKernel.Agents
                 await SendMessage($"Error in LoadFiles: {ex.Message}");
             }
         }
-        private static async Task WriteProjectFiles(string guid, string? input, string name)
+        private async Task WriteProjectFiles(string guid, string? input, string name)
         {
-            string folderPath = Path.Combine("..", "..", "..", ".dump", guid);
+            string folderPath = Path.Combine(_baseFolderPath, guid);
             Directory.CreateDirectory(folderPath);
             string filePath = Path.Combine(folderPath, name);
             await File.WriteAllTextAsync(filePath, input);
