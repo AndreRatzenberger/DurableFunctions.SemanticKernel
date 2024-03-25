@@ -1,5 +1,8 @@
+using System.Globalization;
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
 using Microsoft.DurableTask.Entities;
 
 
@@ -15,7 +18,7 @@ namespace DurableFunctions.SemanticKernel.Commands
         private readonly Dictionary<string, ICommand> _commands = new()
         {
             { "cli.clear", new CliClearCommand() },
-            // { "agent.load", new LoadAgentCommand() },
+            { "agent.load", new AgentLoadCommand() },
             { "agent.list", new ListAgentsCommand() },
             { "help", new HelpCommand() },
             { "cli.welcome", new InitCommand() },
@@ -23,16 +26,27 @@ namespace DurableFunctions.SemanticKernel.Commands
         };
 
         [Function(nameof(ExecuteCommand))]
-        public async Task ExecuteCommand([ActivityTrigger] CommandExecutionInput input)
+        public async Task ExecuteCommand([ActivityTrigger] CommandExecutionInput input, [DurableClient] DurableTaskClient client)
         {
-            if (_commands.TryGetValue(input.CommandString, out var cmd))
-            {
-                await cmd.ExecuteAsync(input.EntityId);
-            }
+            var segments = input.CommandString.Split([' '], 2);
+            var commandName = segments[0].ToLower(CultureInfo.InvariantCulture).Trim();
+            var args = segments.Length > 1 ? ParseArguments(segments[1]) : [];
+
+            if (_commands.TryGetValue(commandName, out var cmd))
+                await cmd.ExecuteAsync(input.EntityId, client, args);
             else
-            {
                 await WebCliBridge.SendMessage($"Command '{input.CommandString}' not found. Type 'help' for a list of available commands.");
-            }
+        }
+
+        [Function(nameof(CleanCommand))]
+        public async Task CleanCommand([ActivityTrigger] CommandExecutionInput input, [DurableClient] DurableTaskClient client)
+        {
+            await client.Entities.CleanEntityStorageAsync(null, true);
+        }
+
+        private static IList<string> ParseArguments(string args)
+        {
+            return [.. args.Split(' ')];
         }
     }
 

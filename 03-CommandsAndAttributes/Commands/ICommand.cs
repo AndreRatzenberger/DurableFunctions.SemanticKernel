@@ -1,10 +1,11 @@
+using Microsoft.DurableTask.Client;
 using Microsoft.DurableTask.Entities;
 
 namespace DurableFunctions.SemanticKernel.Commands
 {
     public interface ICommand
     {
-        Task ExecuteAsync(EntityInstanceId entityId);
+        Task ExecuteAsync(EntityInstanceId entityId, DurableTaskClient client, IList<string> args);
     }
 
 }

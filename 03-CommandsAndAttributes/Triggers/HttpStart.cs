@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using DurableFunctions.SemanticKernel.Orchestrators;
 using Microsoft.DurableTask.Entities;
+using DurableFunctions.SemanticKernel.Commands;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {
@@ -21,9 +22,10 @@ namespace DurableFunctions.SemanticKernel.Functions
                 requestBody = await reader.ReadToEndAsync();
             }
 
-            var entityId = new EntityInstanceId(nameof(AgentState), "singleton");
+            var entityId = new EntityInstanceId(nameof(CommandState), "singleton");
+            var result = await client.Entities.GetEntityAsync<CommandState>(entityId);
 
-            await client.Entities.SignalEntityAsync(entityId, nameof(AgentState.AddCommand), requestBody);
+            await client.Entities.SignalEntityAsync(entityId, nameof(CommandState.AddCommand), requestBody);
             var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(CommandOrchestrator), entityId);
             return client.CreateCheckStatusResponse(req, instanceId);
         }
