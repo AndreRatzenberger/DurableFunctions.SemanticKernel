@@ -23,7 +23,6 @@ namespace DurableFunctions.SemanticKernel.Functions
                 requestBody = await reader.ReadToEndAsync();
             }
             var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(OrchestratorNames.AgentOrchestrator, requestBody);
-            _ = WebCliBridge.SendMessage($"Started {OrchestratorNames.AgentOrchestrator} with ID = '{instanceId}'");
             return client.CreateCheckStatusResponse(req, instanceId);
         }
     }

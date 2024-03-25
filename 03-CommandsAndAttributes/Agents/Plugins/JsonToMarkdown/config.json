@@ -1,0 +1,32 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Takes any json and transforms it into beautioful and readable markdown",
+    "completion": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "inputJson",
+                "description": "The json that should get evaluated and transformed into markdown",
+                "defaultValue": ""
+            },
+            {
+                "name": "importantValues",
+                "description": "comma separated list of values that are important to the user",
+                "defaultValue": ""
+            },
+            {
+                "name": "jsonContext",
+                "description": "what the json was used for",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "default_backends": []
+}

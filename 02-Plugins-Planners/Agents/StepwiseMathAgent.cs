@@ -1,13 +1,12 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
-using DurableFunctions.SemanticKernel.Services;
 using Microsoft.SemanticKernel.Planning;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Plugins.Core;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
@@ -36,12 +35,6 @@ namespace DurableFunctions.SemanticKernel.Agents
 
         protected override async Task<string?> ExecuteAgent(string input)
         {
-            var pluginMarkdown = await _kernel.InvokeAsync("Plugins", "JsonToMarkdown", new() {
-                { "input", JsonConvert.SerializeObject(_kernel.Plugins) },
-                { "jsonContext", "The Plugins the Kernel has access too" }
-            });
-            await SendMessage($"## Used Plugins: <br>{pluginMarkdown.GetValue<string>()} <hr>");
-            
             var stepwisePlanner = new FunctionCallingStepwisePlanner();
             var result = await stepwisePlanner.ExecuteAsync(_kernel, input);
 
@@ -49,18 +42,10 @@ namespace DurableFunctions.SemanticKernel.Agents
 
             await _kernel.InvokeAsync("FileIOPlugin", "Write", new() {
                 { "content", jsonHistory },
-                { "path", "../../../.dump/stepwise.json" }
+                { "path", "../../../stepwise.json" }
             });
 
-            var markdownHistory = await _kernel.InvokeAsync("Plugins", "JsonToMarkdown", new() {
-                { "input", jsonHistory },
-                { "importantValues", "Content, ChatResponseMessage.FunctionToolCalls, ModelId, Role" },
-                { "jsonContext", "Describe the execution plan of an AI trying to solve a problem" }
-            });
-
-          
-            await SendMessage(markdownHistory.GetValue<string>() + "<hr>");
-            await SendMessage("## FInal answer:");
+            await SendMessage("## Final answer:");
             return result.FinalAnswer;
         }
     }

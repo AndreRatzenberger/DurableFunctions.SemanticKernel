@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoWarn>SKEXP0003, SKEXP0004, SKEXP0011, SKEXP0052, SKEXP0060,SKEXP0050</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- Workaround for M1 and M2 macs: ONLY WORKS WITH 2.41.0 
+   https://github.com/Azure/azure-functions-durable-extension/issues/2446#issuecomment-1517203490 -->
+    <PackageReference Include="Contrib.Grpc.Core.M1" Version="2.41.0" />
+    <PackageReference Include="IronPython" Version="3.4.1" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.DurableTask" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.16.4" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.2.0" />
+    <PackageReference Include="Microsoft.DurableTask.Generators" Version="1.0.0-preview.1" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.6.3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Markdown" Version="1.6.3-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.6.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.6.3-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.6.3-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.6.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Agents/Plugins/**/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+</ItemGroup>
+  <ItemGroup>
+    <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
+  </ItemGroup>
+  <!-- Workaround for M1 and M2 macs:
+   https://github.com/Azure/azure-functions-durable-extension/issues/2446#issuecomment-1517203490 -->
+  <Target Name="CopyGrpcNativeAssetsToOutDir" AfterTargets="Build">
+    <ItemGroup>
+      <NativeAssetToCopy Condition="$([MSBuild]::IsOSPlatform('OSX'))" Include="$(OutDir)runtimes/osx-arm64/native/*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NativeAssetToCopy)" DestinationFolder="$(OutDir).azurefunctions/runtimes/osx-arm64/native" />
+  </Target>
+</Project>

@@ -1,0 +1,32 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Generates valid json from a given input and a given target format",
+    "completion": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "inputTargetFormat",
+                "description": "The format to transform the data to",
+                "defaultValue": ""
+            },
+            {
+                "name": "inputData",
+                "description": "The data to perform the transformation on",
+                "defaultValue": ""
+            },
+            {
+                "name": "inputError",
+                "description": "Error that got thrown during the deserialize process",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "default_backends": []
+}

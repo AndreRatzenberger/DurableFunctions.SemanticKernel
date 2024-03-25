@@ -1,0 +1,22 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Designs user stories for a project plan",
+    "completion": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "input",
+                "description": "Project Plan to evaluate",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "default_backends": []
+}

@@ -1,7 +1,7 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
