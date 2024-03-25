@@ -156,6 +156,22 @@
             cli.innerHTML += msg; // Append each message
           });
         });
+
+        fetch("/send", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: `message=${encodeURIComponent("cli.welcome")}`,
+            })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Welcome message sent successfully");
+            } else {
+              console.error("Failed to send welcome message");
+            }
+          })
+          .catch((error) =>
+            console.error("Error sending welcome message:", error)
+          );
       });
     </script>
   </body>

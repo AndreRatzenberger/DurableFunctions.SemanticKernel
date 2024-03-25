@@ -6,6 +6,7 @@ using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Agents;
 using DurableFunctions.SemanticKernel.Services;
 using DurableFunctions.SemanticKernel.Extensions;
+using DurableFunctions.SemanticKernel.Commands;
 
 var host = new HostBuilder()
     .ConfigureAppConfiguration((hostingContext, config) =>
@@ -23,6 +24,7 @@ var host = new HostBuilder()
         services.Configure<AzureOpenAIOptions>(hostingContext.Configuration.GetSection(nameof(AzureOpenAIOptions)));
         services.AddSingleton<SimplePrompAgent>();
         services.AddSingleton<ConfigurationService>();
+        services.AddSingleton<CommandManager>();
         services.AddLogging();
 
         LoggerConfiguration.ConfigureLogger("DURABLE AI");
