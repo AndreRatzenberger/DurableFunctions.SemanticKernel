@@ -1,4 +1,3 @@
-
 using Microsoft.Azure.Functions.Worker;
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.SemanticKernel.Experimental.Agents;

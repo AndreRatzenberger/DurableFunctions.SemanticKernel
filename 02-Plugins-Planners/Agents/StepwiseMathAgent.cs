@@ -45,7 +45,7 @@ namespace DurableFunctions.SemanticKernel.Agents
                 { "path", "../../../stepwise.json" }
             });
 
-            await SendMessage("## FInal answer:");
+            await SendMessage("## Final answer:");
             return result.FinalAnswer;
         }
     }
