@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Plugins.Core;
 using DurableFunctions.SemanticKernel.Extensions;
+using YamlDotNet.Serialization.Schemas;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
@@ -20,8 +21,10 @@ namespace DurableFunctions.SemanticKernel.Agents
         {
             _configurationService = configurationService;
             var builder = Kernel.CreateBuilder();
-            builder.Plugins.AddFromPromptDirectory("Agents/Plugins");
-            builder.Plugins.AddFromType<Plugins.MathPlugin>();
+            //builder.Plugins.AddFromPromptDirectory("Agents/Plugins");
+            //Use this extension method to load functions from a directory as plugins
+            builder.Plugins.AddFromFunctionDirectory("Agents/Plugins/ChainOfThought");
+            builder.Plugins.AddFromType<MathPlugin>();
             builder.Plugins.AddFromType<FileIOPlugin>();
             builder.Services.AddLogging(c => c.AddDebug().SetMinimumLevel(LogLevel.Trace));
             _kernel = builder.WithOptionsConfiguration(_configurationService.GetCurrentConfiguration()).Build();
@@ -36,6 +39,7 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected override async Task<string?> ExecuteAgent(string input)
         {
             var stepwisePlanner = new FunctionCallingStepwisePlanner();
+            input += "\n AFTER EVERY STEP SEND A STATUS SUMMARY WITH THE STATUS PLUGIN\n";
             var result = await stepwisePlanner.ExecuteAsync(_kernel, input);
 
             var jsonHistory = JsonConvert.SerializeObject(result.ChatHistory, Formatting.Indented);

@@ -9,6 +9,8 @@ using DurableFunctions.SemanticKernel.Extensions;
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
+    [DFSKAgentName("ProjectAgent")]
+    [DFSKAgentDescription("This agent is responsible for generating a project plan, user stories, tasks, and initializing a repository structure.")]
     public class ProjectAgent : BaseAgent
     {
         private readonly string _baseFolderPath = Path.Combine("..", "..", "..", ".generated");

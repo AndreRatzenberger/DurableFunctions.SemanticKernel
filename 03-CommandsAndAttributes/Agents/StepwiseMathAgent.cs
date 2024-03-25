@@ -11,6 +11,9 @@ using DurableFunctions.SemanticKernel.Extensions;
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
+    [DFSKAgentName("StepwiseMathAgent")]
+    [DFSKAgentDescription("A stepwise math agent that can solve math problems step by step.")]
+    [DFSKAgentDescription("It uses the FunctionCallingStepwisePlanner and also saves the plan to a json file.")]
     public class StepwiseMathAgent : BaseAgent
     {
         private readonly ConfigurationService _configurationService;
@@ -19,12 +22,15 @@ namespace DurableFunctions.SemanticKernel.Agents
         public StepwiseMathAgent(ConfigurationService configurationService)
         {
             _configurationService = configurationService;
+
             var builder = Kernel.CreateBuilder();
-            builder.Plugins.AddFromPromptDirectory("Agents/Plugins");
-            builder.Plugins.AddFromType<Plugins.MathPlugin>();
+            builder.Plugins.AddFromPromptDirectory("Agents/Plugins/ChainOfThought");
+            builder.Plugins.AddFromFunctionDirectory("Agents/Plugins/ChainOfThought");
+            builder.Plugins.AddFromType<MathPlugin>();
             builder.Plugins.AddFromType<FileIOPlugin>();
             builder.Services.AddLogging(c => c.AddDebug().SetMinimumLevel(LogLevel.Trace));
             _kernel = builder.WithOptionsConfiguration(_configurationService.GetCurrentConfiguration()).Build();
+         
         }
 
         [Function($"{nameof(StepwiseMathAgent)}_Start")]

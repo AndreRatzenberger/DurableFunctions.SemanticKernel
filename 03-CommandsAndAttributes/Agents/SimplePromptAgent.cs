@@ -6,6 +6,8 @@ using DurableFunctions.SemanticKernel.Extensions;
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
+    [DFSKAgentName("SimplePromptAgent")]
+    [DFSKAgentDescription("A simple agent that just reacts on prompts like ChatGPT.")]
     public class SimplePrompAgent : BaseAgent
     {
 
