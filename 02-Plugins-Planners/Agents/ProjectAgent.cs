@@ -3,42 +3,12 @@ using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Extentions;
 using System.Text.Json;
-using Microsoft.SemanticKernel.Plugins.Core;
+using DurableFunctions.SemanticKernel.Common;
+using DurableFunctions.SemanticKernel.Agents.Models;
+
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
-    public class UserStory
-    {
-        public string Id { get; set; } = string.Empty; 
-        public string Title { get; set; } = string.Empty; 
-        public int StoryPoints { get; set; }
-    }
-    public class ProjectFiles
-    {
-        public string FileName { get; set; } = string.Empty; 
-        public string Content { get; set; } = string.Empty; 
-    }
-    public class ProjectFilesList
-    {
-        public List<ProjectFiles> ProjectFiles { get; set; } = []; 
-    }
-    public class ProjectTask
-    {
-        public string Id { get; set; } = string.Empty; 
-        public string UserStoryId { get; set; } = string.Empty; 
-        public string Title { get; set; } = string.Empty; 
-        public int EstimatedLinesOfCode { get; set; }
-        public int EstimatedHoursNeeded { get; set; }
-    }
-    public class UserStoryList
-    {
-        public List<UserStory> UserStories { get; set; } = []; 
-    }
-    public class ProjectTaskList
-    {
-        public List<ProjectTask> ProjectTasks { get; set; } = []; 
-    }
-
     public class ProjectAgent : BaseAgent
     {
         private readonly ConfigurationService _configurationService;
@@ -54,7 +24,6 @@ namespace DurableFunctions.SemanticKernel.Agents
 
             var builder = Kernel.CreateBuilder();
             builder.Plugins.AddFromPromptDirectory("Agents/Plugins");
-            builder.Plugins.AddFromType<FileIOPlugin>();
             _kernel = builder.WithOptionsConfiguration(_configurationService.GetCurrentConfiguration())
             .Build();
         }
@@ -69,77 +38,110 @@ namespace DurableFunctions.SemanticKernel.Agents
         {
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
-            Guid guid;
-            if (Guid.TryParse(input, out var parsedGuid))
-            {
-                guid = parsedGuid;
-                await LoadFiles(guid);
-            }
-            else
-                guid = Guid.NewGuid();
-
-            var guidString = guid.ToString();
+            //If the input is a valid guid, we will load the files from the disk 
+            //to continue the process where it was left off
+            var guid = await ProcessInputGuid(input);
 
             await SendMessage("**ProjectPlanner STARTED...**");
-            if (string.IsNullOrEmpty(_projectPlannerResponse))
-            {
-                var responseProjectPlanner = await _kernel.InvokeAsync("Plugins", "ProjectPlanner", new() {
-                    { "input", input }
-                });
-                _projectPlannerResponse = responseProjectPlanner.GetValue<string>();
-            }
+            await EnsureProjectPlannerResponse(input);
 
             await SendMessage(_projectPlannerResponse);
-            await WriteProjectFiles(guidString, _projectPlannerResponse, "ProjectPlan.md");
+            await WriteProjectFiles(guid.ToString(), _projectPlannerResponse, "ProjectPlan.md");
 
             await SendMessage("**UserStory designer STARTED...**");
+            await EnsureUserStoriesGenerated();
+
+            await SendMessage(JsonHelpers.SerializeJsonToMarkdown(_userStories, jsonOptions));
+            await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(_userStories, jsonOptions), "userstories.json");
+
+            await ProcessUserStories(guid, jsonOptions);
+
+            await SendMessage("**Repo Initializer STARTED...**");
+            await ProcessRepoInitializer(guid, jsonOptions);
+
+            return JsonHelpers.SerializeJsonToMarkdown(_projectFiles, jsonOptions);
+        }
+
+        private async Task<Guid> ProcessInputGuid(string input)
+        {
+            if (Guid.TryParse(input, out var guid))
+            {
+                await LoadFiles(guid);
+                return guid;
+            }
+            return Guid.NewGuid();
+        }
+
+        private async Task EnsureProjectPlannerResponse(string input)
+        {
+            if (string.IsNullOrEmpty(_projectPlannerResponse))
+            {
+                var response = await InvokeFunction("ProjectPlanner", new KernelArguments { { "input", input } });
+                _projectPlannerResponse = response.GetValue<string>();
+            }
+        }
+
+        private async Task EnsureUserStoriesGenerated()
+        {
             if (_userStories.Count == 0)
             {
-                var responseUserStoryDesigner = await _kernel.InvokeAsync("Plugins", "UserStoryDesigner", new() {
-                    { "input", _projectPlannerResponse }
-                });
-                _userStories = await GenerateValidUserStories(responseUserStoryDesigner.GetValue<string>());
+                var response = await InvokeFunction("UserStoryDesigner", new KernelArguments { { "input", _projectPlannerResponse } });
+                var responseString = response.GetValue<string>();
+                _userStories = await GenerateValidUserStories(responseString);
             }
+        }
 
-            await SendMessage($"```json\n{JsonSerializer.Serialize(_userStories, jsonOptions)}\n```");
-            await WriteProjectFiles(guidString, JsonSerializer.Serialize(_userStories, jsonOptions), "userstories.json");
-
+        private async Task ProcessUserStories(Guid guid, JsonSerializerOptions jsonOptions)
+        {
             foreach (var userStory in _userStories)
             {
                 await SendMessage($"**Task designer for '{userStory.Id} - {userStory.Title}' STARTED...**");
-                if (_projectTasks.Any(task => task.UserStoryId == userStory.Id))
+                var taskList = _projectTasks.Where(task => task.UserStoryId == userStory.Id).ToList();
+                if (taskList.Any())
                 {
-                    var taskList = _projectTasks.Where(task => task.UserStoryId == userStory.Id).ToList();
-                    await SendMessage($"```json\n{JsonSerializer.Serialize(taskList, jsonOptions)}\n```");
+                    await SendMessage(JsonHelpers.SerializeJson(taskList, jsonOptions));
                     continue;
                 }
 
-                var responseTaskDesigner = await _kernel.InvokeAsync("Plugins", "TaskDesigner", new() {
-                    { "inputProjectPlan", _projectPlannerResponse },
-                    { "inputAlreadyCreatedItems", $"{JsonSerializer.Serialize(_userStories)} \n {JsonSerializer.Serialize(_projectTasks)}" },
-                    { "inputUserStory", JsonSerializer.Serialize(userStory) }
-                });
-
-                var tasks = await GenerateValidTasks(responseTaskDesigner.GetValue<string>());
-                await SendMessage($"```json\n{JsonSerializer.Serialize(tasks, jsonOptions)}\n```");
-                await WriteProjectFiles(guidString, JsonSerializer.Serialize(tasks, jsonOptions), $"task_{userStory.Id}.json");
+                var tasks = await GenerateAndProcessTasks(userStory);
+                await SendMessage(JsonHelpers.SerializeJson(tasks, jsonOptions));
+                await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(tasks, jsonOptions), $"task_{userStory.Id}.json");
                 _projectTasks.AddRange(tasks);
             }
+        }
 
-            await SendMessage("**Repo Initializer STARTED...**");
-            var responseRepo = await _kernel.InvokeAsync("Plugins", "GenerateRepositoryStructure", new() {
-                    { "inputHighLevelProjectPlan", _projectPlannerResponse },
-                    { "inputUserStories", JsonSerializer.Serialize(_userStories) },
-                    { "inputTasks", JsonSerializer.Serialize(_projectTasks) }
-                });
+        private async Task<List<ProjectTask>> GenerateAndProcessTasks(UserStory userStory)
+        {
+            var response = await InvokeFunction("TaskDesigner", new KernelArguments
+            {
+                { "inputProjectPlan", _projectPlannerResponse },
+                { "inputAlreadyCreatedItems", $"{JsonHelpers.SerializeJson(_userStories)} \n {JsonHelpers.SerializeJson(_projectTasks)}" },
+                { "inputUserStory", JsonHelpers.SerializeJson(userStory) }
+            });
 
-            var repoStructure = responseRepo.GetValue<string>();
-            _projectFiles = await GenerateValidRepo(repoStructure);
-            await SendMessage($"```json\n{JsonSerializer.Serialize(_projectFiles, jsonOptions)}\n```");
-            await WriteProjectFiles(guidString, JsonSerializer.Serialize(_projectFiles, jsonOptions), $"repo.json");
+            var responseString = response.GetValue<string>();
+            return await GenerateValidTasks(responseString);
+        }
+
+        private async Task ProcessRepoInitializer(Guid guid, JsonSerializerOptions jsonOptions)
+        {
+            var response = await InvokeFunction("GenerateRepositoryStructure", new KernelArguments
+            {
+                { "inputHighLevelProjectPlan", _projectPlannerResponse },
+                { "inputUserStories", JsonHelpers.SerializeJson(_userStories) },
+                { "inputTasks", JsonHelpers.SerializeJson(_projectTasks) }
+            });
+
+            var responseString = response.GetValue<string>();
+            _projectFiles = await GenerateValidRepo(responseString);
+            await SendMessage(JsonHelpers.SerializeJsonToMarkdown(_projectFiles, jsonOptions));
+            await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(_projectFiles, jsonOptions), "repo.json");
             await GenerateFiles(_projectFiles, guid);
+        }
 
-            return JsonSerializer.Serialize(_projectFiles, jsonOptions);
+        private async Task<dynamic> InvokeFunction(string functionName, KernelArguments parameters)
+        {
+            return await _kernel.InvokeAsync("Plugins", functionName, parameters);
         }
 
         private async Task GenerateFiles(List<ProjectFiles> projectFiles, Guid guid)
