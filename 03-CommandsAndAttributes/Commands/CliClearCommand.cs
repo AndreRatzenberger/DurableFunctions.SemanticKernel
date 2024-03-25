@@ -5,7 +5,7 @@ namespace DurableFunctions.SemanticKernel.Commands
 {
     [CommandName("cli.clear")]
     [CommandDescription("Clears the console.")]
-    public class ClearCliCommand : ICommand
+    public class CliClearCommand : ICommand
     {
         public async Task ExecuteAsync(EntityInstanceId entityId)
         {

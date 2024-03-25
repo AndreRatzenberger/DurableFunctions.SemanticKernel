@@ -14,11 +14,12 @@ namespace DurableFunctions.SemanticKernel.Commands
     {
         private readonly Dictionary<string, ICommand> _commands = new()
         {
-            { "cli.clear", new ClearCliCommand() },
+            { "cli.clear", new CliClearCommand() },
             // { "agent.load", new LoadAgentCommand() },
             { "agent.list", new ListAgentsCommand() },
             { "help", new HelpCommand() },
-            { "cli.welcome", new InitCommand() }
+            { "cli.welcome", new InitCommand() },
+            { "cli.verbose", new CliVerboseCommand() }
         };
 
         [Function(nameof(ExecuteCommand))]

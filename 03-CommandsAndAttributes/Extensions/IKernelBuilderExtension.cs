@@ -49,9 +49,7 @@ namespace DurableFunctions.SemanticKernel.Extensions
             string promptText = File.ReadAllText(Path.Combine(folderPath, PromptFile));
             string configText = File.ReadAllText(Path.Combine(folderPath, ConfigFile));
 
-            var name = new DirectoryInfo(folderPath).Name;
-
-            var config = PromptTemplateConfig.FromJson(File.ReadAllText(configText));
+            var config = PromptTemplateConfig.FromJson(configText);
             config.Template = promptText;
             IPromptTemplate promptTemplateInstance = factory.Create(config);
 

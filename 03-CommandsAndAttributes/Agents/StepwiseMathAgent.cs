@@ -24,7 +24,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             _configurationService = configurationService;
 
             var builder = Kernel.CreateBuilder();
-            builder.Plugins.AddFromPromptDirectory("Agents/Plugins/ChainOfThought");
+            //builder.Plugins.AddFromPromptDirectory("Agents/Plugins");
+            //Use this extension method to load functions from a directory as plugins
             builder.Plugins.AddFromFunctionDirectory("Agents/Plugins/ChainOfThought");
             builder.Plugins.AddFromType<MathPlugin>();
             builder.Plugins.AddFromType<FileIOPlugin>();
