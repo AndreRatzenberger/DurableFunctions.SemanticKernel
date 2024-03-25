@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 
 
-namespace DurableFunctions.SemanticKernel.Extentions
+namespace DurableFunctions.SemanticKernel.Extensions
 {
     internal static class KernelBuilderExtensions
     {

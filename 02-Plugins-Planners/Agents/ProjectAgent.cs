@@ -1,10 +1,10 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
 using System.Text.Json;
 using DurableFunctions.SemanticKernel.Common;
 using DurableFunctions.SemanticKernel.Agents.Models;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents

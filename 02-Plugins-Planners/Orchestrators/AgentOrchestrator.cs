@@ -1,5 +1,5 @@
 using DurableFunctions.SemanticKernel.Agents;
-using DurableFunctions.SemanticKernel.Extentions;
+using DurableFunctions.SemanticKernel.Extensions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 

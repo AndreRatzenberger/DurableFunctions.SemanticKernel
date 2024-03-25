@@ -1,11 +1,11 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
 using Microsoft.SemanticKernel.Planning.Handlebars;
 using DurableFunctions.SemanticKernel.Agents.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents

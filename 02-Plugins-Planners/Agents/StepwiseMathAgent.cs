@@ -1,12 +1,12 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
 using Microsoft.SemanticKernel.Planning;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Plugins.Core;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
