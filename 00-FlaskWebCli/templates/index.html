@@ -102,6 +102,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("messageForm");
         const messageInput = document.querySelector('input[name="message"]');
+        
 
         form.onsubmit = function (e) {
           e.preventDefault();
@@ -158,11 +159,13 @@
         });
 
         fetch("/send", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: `message=${encodeURIComponent("cli.welcome")}`,
-            })
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `message=${encodeURIComponent("cli.welcome")}`,
+        })
           .then((response) => {
+            form.click();
+            messageInput.focus();
             if (response.ok) {
               console.log("Welcome message sent successfully");
             } else {

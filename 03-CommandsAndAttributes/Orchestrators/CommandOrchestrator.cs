@@ -1,6 +1,4 @@
-using DurableFunctions.SemanticKernel.Agents;
 using DurableFunctions.SemanticKernel.Commands;
-using DurableFunctions.SemanticKernel.Extensions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;

@@ -1,9 +1,6 @@
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 
 namespace DurableFunctions.SemanticKernel.Commands
@@ -17,9 +14,9 @@ namespace DurableFunctions.SemanticKernel.Commands
     {
         private readonly Dictionary<string, ICommand> _commands = new()
         {
-            // { "cli.clear", new ClearCommand() },
+            { "cli.clear", new ClearCliCommand() },
             // { "agent.load", new LoadAgentCommand() },
-            // { "agent.list", new ListAgentsCommand() },
+            { "agent.list", new ListAgentsCommand() },
             { "help", new HelpCommand() },
             { "cli.welcome", new InitCommand() }
         };

@@ -1,5 +1,3 @@
-
-using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;
 
 namespace DurableFunctions.SemanticKernel.Commands
