@@ -12,10 +12,28 @@ namespace DurableFunctions.SemanticKernel.Extensions
         public string Description { get; } = description;
     }
 
-
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DFSKAgentCommand(string name) : Attribute
+    [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = true)]
+    public class DFSKPlugins(string plugin) : Attribute
     {
-        public string Command { get; } = name;
+        public string Plugin { get; } = plugin;
+    }
+
+    [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = true)]
+    public class DFSKFunctions(string functions) : Attribute
+    {
+        public string Functionc { get; } = functions;
+    }
+
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class DFSKAgentCommand(string command) : Attribute
+    {
+        public string Command { get; } = command;
+    }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class DFSKInput(string input) : Attribute
+    {
+        public string Input { get; } = input;
     }
 }

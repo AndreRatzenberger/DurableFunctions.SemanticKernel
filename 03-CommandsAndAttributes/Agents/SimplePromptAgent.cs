@@ -22,6 +22,8 @@ namespace DurableFunctions.SemanticKernel.Agents
                 .Build();
         }
 
+        [DFSKAgentCommand($"{nameof(SimplePrompAgent)}_Start")]
+        [DFSKInput($"A simple prompt")]
         [Function($"{nameof(SimplePrompAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {

@@ -1,4 +1,5 @@
 using DurableFunctions.SemanticKernel.Agents.Plugins;
+using DurableFunctions.SemanticKernel.Extensions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Experimental.Agents;
@@ -6,6 +7,8 @@ using Microsoft.SemanticKernel.Experimental.Agents;
 namespace DurableFunctions.SemanticKernel.Agents
 {
     //Agent Implementation with SemanticKernel's native Agents (still experimental)
+    [DFSKAgentName("NativeSemanticKernelAgent")]
+    [DFSKAgentDescription("This agent is can generate articles based on a given topic.")]
     public class NativeSemanticKernelAgent : BaseAgent
     {
         private readonly string _modelId;
@@ -17,6 +20,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             _apiKey = Environment.GetEnvironmentVariable("OpenAIOptions__ApiKey") ?? throw new ArgumentNullException("OpenAIOptions__ApiKey");
         }
 
+        [DFSKAgentCommand($"{nameof(NativeSemanticKernelAgent)}_Start")]
+        [DFSKInput($"Any article topic or idea you can write about.")]
         [Function($"{nameof(NativeSemanticKernelAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {

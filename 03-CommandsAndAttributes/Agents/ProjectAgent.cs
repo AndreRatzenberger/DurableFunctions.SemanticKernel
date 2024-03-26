@@ -31,6 +31,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             .Build();
         }
 
+        [DFSKAgentCommand($"{nameof(ProjectAgent)}_Start")]
+        [DFSKInput($"Any information that can be used to generate a project plan.")]
         [Function($"{nameof(ProjectAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {

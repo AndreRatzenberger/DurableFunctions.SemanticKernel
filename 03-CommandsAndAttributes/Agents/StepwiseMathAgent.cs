@@ -34,6 +34,8 @@ namespace DurableFunctions.SemanticKernel.Agents
          
         }
 
+        [DFSKAgentCommand($"{nameof(StepwiseMathAgent)}_Start")]
+        [DFSKInput($"A math problem to solve step by step.")]
         [Function($"{nameof(StepwiseMathAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {
