@@ -25,6 +25,11 @@ namespace DurableFunctions.SemanticKernel.Commands
             Prompt = prompt;
         }   
 
+        public void ClearQueue()
+        {
+            CommandQueue.Clear();
+        }
+
         public string GetArgs()
         {
             return Args;

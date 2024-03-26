@@ -41,7 +41,11 @@ namespace DurableFunctions.SemanticKernel.Commands
         [Function(nameof(CleanCommand))]
         public async Task CleanCommand([ActivityTrigger] CommandExecutionInput input, [DurableClient] DurableTaskClient client)
         {
-            await client.Entities.CleanEntityStorageAsync(null, true);
+            await client.Entities.SignalEntityAsync(input.EntityId, nameof(CommandState.SetArgs), "");
+            await client.Entities.SignalEntityAsync(input.EntityId, nameof(CommandState.SetExecutingCommand), "");
+            await client.Entities.SignalEntityAsync(input.EntityId, nameof(CommandState.SetPrompt), "");
+            await client.Entities.SignalEntityAsync(input.EntityId, nameof(CommandState.ClearQueue));
+            await client.Entities.SignalEntityAsync(input.EntityId, nameof(CommandState.SetActiveCommand), "");
         }
 
         private static IList<string> ParseArguments(string args)
