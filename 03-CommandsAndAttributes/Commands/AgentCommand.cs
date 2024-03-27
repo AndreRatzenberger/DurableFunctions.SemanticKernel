@@ -28,7 +28,7 @@ namespace DurableFunctions.SemanticKernel.Commands
     {
         public async Task<CommandState> ExecuteAsync(CommandState commandState, DurableTaskClient client)
         {
-            await WebCliBridge.SendMessage($"Wrong format. Can't be used without Parameters. Try {commandState.Command} -help");
+            await WebCliBridge.SendMessage($"Wrong or missing parameters. Try {commandState.Command} -help");
             return new CommandState();
         }
 

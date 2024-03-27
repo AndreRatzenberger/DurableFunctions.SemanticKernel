@@ -54,12 +54,13 @@ namespace DurableFunctions.SemanticKernel.Commands.Registry
             var input = commandState.Command;
             var segments = input.Split(' ', 2);
             var commandKey = segments[0].ToLower();
-
+            _commandState.Command = commandKey;
             if (_commands.TryGetValue(commandKey, out var commandInstance))
             {
                 var args = segments.Length > 1 ? segments[1].Split(' ') : [];
                 var matchedParam = commandInstance.CommandParameters.Keys.FirstOrDefault(param => args.Any(arg => arg.StartsWith(param)));
-
+                commandState.Args = [.. args];
+                
                 if (matchedParam != null)
                 {
                     if(matchedParam == "-help")
@@ -67,8 +68,7 @@ namespace DurableFunctions.SemanticKernel.Commands.Registry
                         await ShowCommandHelp(commandInstance.CommandParameters);
                         return new CommandState();
                     }
-                    // Prepare to invoke the correct command logic based on the matched parameter
-                    commandState.Args = [.. args];
+                    
                     _commandState = await InvokeCommandLogic(commandInstance.Command, matchedParam, commandState, client);
                 }
                 else
@@ -79,8 +79,10 @@ namespace DurableFunctions.SemanticKernel.Commands.Registry
             }
             else
             {
-                _commandState.StatusMessage = $"Command '{input}' not found. Type 'help' for a list of available commands.";
-                await ShowCommandStatus(new CommandState { StatusMessage = _commandState.StatusMessage });
+                _commandState = new CommandState
+                {
+                    StatusMessage = $"Command '{input}' not found. Type 'help' for a list of available commands."
+                };
             }
 
             return _commandState;
