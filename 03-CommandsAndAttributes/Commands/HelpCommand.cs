@@ -1,10 +1,10 @@
 
 using System.Reflection;
-using System.Text;
+using DurableFunctions.SemanticKernel.Commands.Interface;
+using DurableFunctions.SemanticKernel.Commands.State;
 using DurableFunctions.SemanticKernel.Extensions;
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.DurableTask.Client;
-using Microsoft.DurableTask.Entities;
 
 namespace DurableFunctions.SemanticKernel.Commands
 {
@@ -12,7 +12,7 @@ namespace DurableFunctions.SemanticKernel.Commands
     [CommandDescription("Shows a list of available commands.")]
     public class HelpCommand : ICommand
     {
-        public async Task ExecuteAsync(EntityInstanceId entityId, DurableTaskClient client, IList<string> args)
+        public async Task<CommandState> ExecuteAsync(CommandState commandState, DurableTaskClient client)
         {
             var commandTypes = Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => typeof(ICommand).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
@@ -36,8 +36,9 @@ namespace DurableFunctions.SemanticKernel.Commands
                 }
 
                 await WebCliBridge.SendMessage($"<hr>");
-
             }
+            
+            return new CommandState();
         }
     }
 

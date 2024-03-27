@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "semantic-kernel.skprompt.debugger",
+            "request": "launch",
+            "name": "Semantic Kernel Function Launch",
+            "workspaceFolder": "${workspaceFolder}",
+            "program": "${relativeFile}"
+        },
+        {
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",

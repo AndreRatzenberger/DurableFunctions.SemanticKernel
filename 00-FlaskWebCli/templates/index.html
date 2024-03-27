@@ -161,7 +161,7 @@
         fetch("/send", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: `message=${encodeURIComponent("cli.welcome")}`,
+          body: `message=${encodeURIComponent("cli -welcome")}`,
         })
           .then((response) => {
             form.click();

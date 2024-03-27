@@ -52,9 +52,10 @@ namespace DurableFunctions.SemanticKernel.Services
 
                 _ = await httpClient.PostAsync(endpoint, content);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-
+                
+                throw new System.Exception($"Error sending message: {input} - {WebCliConfiguration.GetEndpoint()} - {ex.Message}");
             }
         }
     }

@@ -58,8 +58,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             await SendMessage("**UserStory designer STARTED...**");
             await EnsureUserStoriesGenerated();
 
-            await SendMessage(JsonHelpers.SerializeJsonToMarkdown(_userStories, jsonOptions));
-            await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(_userStories, jsonOptions), "userstories.json");
+            await SendMessage(JsonHelpers.SerializeToMarkdown(_userStories, jsonOptions));
+            await WriteProjectFiles(guid.ToString(), JsonHelpers.Serialize(_userStories, jsonOptions), "userstories.json");
 
             await ProcessUserStories(guid, jsonOptions);
 
@@ -106,13 +106,13 @@ namespace DurableFunctions.SemanticKernel.Agents
                 var taskList = _projectTasks.Where(task => task.UserStoryId == userStory.Id).ToList();
                 if (taskList.Count != 0)
                 {
-                    await SendMessage(JsonHelpers.SerializeJsonToMarkdown(taskList, jsonOptions));
+                    await SendMessage(JsonHelpers.SerializeToMarkdown(taskList, jsonOptions));
                     continue;
                 }
 
                 var tasks = await GenerateAndProcessTasks(userStory);
-                await SendMessage(JsonHelpers.SerializeJsonToMarkdown(tasks, jsonOptions));
-                await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(tasks, jsonOptions), $"task_{userStory.Id}.json");
+                await SendMessage(JsonHelpers.SerializeToMarkdown(tasks, jsonOptions));
+                await WriteProjectFiles(guid.ToString(), JsonHelpers.Serialize(tasks, jsonOptions), $"task_{userStory.Id}.json");
                 _projectTasks.AddRange(tasks);
             }
         }
@@ -122,8 +122,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             var response = await InvokeFunction("TaskDesigner", new KernelArguments
             {
                 { "inputProjectPlan", _projectPlannerResponse },
-                { "inputAlreadyCreatedItems", $"{JsonHelpers.SerializeJson(_userStories)} \n {JsonHelpers.SerializeJson(_projectTasks)}" },
-                { "inputUserStory", JsonHelpers.SerializeJson(userStory) }
+                { "inputAlreadyCreatedItems", $"{JsonHelpers.Serialize(_userStories)} \n {JsonHelpers.Serialize(_projectTasks)}" },
+                { "inputUserStory", JsonHelpers.Serialize(userStory) }
             });
 
             var responseString = response.GetValue<string>();
@@ -137,16 +137,16 @@ namespace DurableFunctions.SemanticKernel.Agents
                 var response = await InvokeFunction("GenerateRepositoryStructure", new KernelArguments
                 {
                     { "inputHighLevelProjectPlan", _projectPlannerResponse },
-                    { "inputUserStories", JsonHelpers.SerializeJson(_userStories) },
-                    { "inputTasks", JsonHelpers.SerializeJson(_projectTasks) }
+                    { "inputUserStories", JsonHelpers.Serialize(_userStories) },
+                    { "inputTasks", JsonHelpers.Serialize(_projectTasks) }
                 });
 
                 var responseString = response.GetValue<string>();
                 _projectFiles = await GenerateValidRepo(responseString);
             }
 
-            await SendMessage(JsonHelpers.SerializeJsonToMarkdown(_projectFiles, jsonOptions));
-            await WriteProjectFiles(guid.ToString(), JsonHelpers.SerializeJson(_projectFiles, jsonOptions), "repo.json");
+            await SendMessage(JsonHelpers.SerializeToMarkdown(_projectFiles, jsonOptions));
+            await WriteProjectFiles(guid.ToString(), JsonHelpers.Serialize(_projectFiles, jsonOptions), "repo.json");
             await GenerateFiles(_projectFiles, guid);
         }
 

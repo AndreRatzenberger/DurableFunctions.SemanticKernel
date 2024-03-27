@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using System.IO; // Add this using statement
 
 
 namespace DurableFunctions.SemanticKernel.Extensions
