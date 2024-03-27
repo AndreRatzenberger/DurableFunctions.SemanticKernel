@@ -21,7 +21,7 @@ namespace DurableFunctions.SemanticKernel.Commands
 
     [CommandName("agent")]
     [CommandDescription("Loads a specific agent.")]
-    [CommandParameter("-load <AgentName>", "Loads the Agent into the current session.")]
+    [CommandParameter("-load 'AgentName'", "Loads the Agent into the current session.")]
     [CommandParameter("-list", "Lists all available agents.")]
     [CommandParameter("-help", "Shows this explanation of the command")]
     public class AgentCommand : ICommand

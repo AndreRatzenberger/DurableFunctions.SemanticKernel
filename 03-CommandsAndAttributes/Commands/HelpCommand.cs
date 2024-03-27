@@ -32,7 +32,7 @@ namespace DurableFunctions.SemanticKernel.Commands
                 var parameterAttrs = type.GetCustomAttributes<CommandParameterAttribute>();
                 foreach (var paramAttr in parameterAttrs)
                 {
-                    await WebCliBridge.SendMessage($"  - {paramAttr.Parameter}: {paramAttr.Description}");
+                    await WebCliBridge.SendMessage($" {paramAttr.Parameter}: {paramAttr.Description}");
                 }
 
                 await WebCliBridge.SendMessage($"<hr>");

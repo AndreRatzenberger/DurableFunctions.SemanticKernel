@@ -1,4 +1,0 @@
-namespace DurableFunctions.SemanticKernel.Commands
-{
-    
-}
