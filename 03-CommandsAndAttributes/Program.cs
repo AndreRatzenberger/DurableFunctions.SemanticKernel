@@ -6,7 +6,6 @@ using DurableFunctions.SemanticKernel.Options;
 using DurableFunctions.SemanticKernel.Agents;
 using DurableFunctions.SemanticKernel.Services;
 using DurableFunctions.SemanticKernel.Extensions;
-using DurableFunctions.SemanticKernel.Commands;
 using DurableFunctions.SemanticKernel.Common;
 using System.Text.Json;
 using DurableFunctions.SemanticKernel.Commands.Registry;

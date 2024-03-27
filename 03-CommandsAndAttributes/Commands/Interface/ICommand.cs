@@ -1,4 +1,3 @@
-using System.Reflection;
 using DurableFunctions.SemanticKernel.Commands.State;
 using Microsoft.DurableTask.Client;
 

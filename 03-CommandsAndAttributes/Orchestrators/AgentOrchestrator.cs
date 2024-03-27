@@ -1,4 +1,3 @@
-using DurableFunctions.SemanticKernel.Agents;
 using DurableFunctions.SemanticKernel.Commands;
 using DurableFunctions.SemanticKernel.Common;
 using DurableFunctions.SemanticKernel.Extensions;

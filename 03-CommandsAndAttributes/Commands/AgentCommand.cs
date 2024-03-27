@@ -6,10 +6,11 @@ using DurableFunctions.SemanticKernel.Extensions;
 using DurableFunctions.SemanticKernel.Orchestrators;
 using DurableFunctions.SemanticKernel.Services;
 using Microsoft.DurableTask.Client;
-using Microsoft.DurableTask.Entities;
 
 namespace DurableFunctions.SemanticKernel.Commands
 {
+    //You can expand the CommandState class with additional properties
+    //If your command needs to store additional information
     public class AgentCommandState : CommandState
     {
         public string AgentName { get; set; } = "";
@@ -19,6 +20,7 @@ namespace DurableFunctions.SemanticKernel.Commands
         public string Prompt { get; set; } = "";
     }
 
+    //To implement a command set these attributes and implement the ICommand interface
     [CommandName("agent")]
     [CommandDescription("Loads a specific agent.")]
     [CommandParameter("-load 'AgentName'", "Loads the Agent into the current session.")]
@@ -26,12 +28,16 @@ namespace DurableFunctions.SemanticKernel.Commands
     [CommandParameter("-help", "Shows this explanation of the command")]
     public class AgentCommand : ICommand
     {
+         //ExecuteAsync is the method that will be called when the command is invoked without parameters
         public async Task<CommandState> ExecuteAsync(CommandState commandState, DurableTaskClient client)
         {
             await WebCliBridge.SendMessage($"Wrong or missing parameters. Try {commandState.Command} -help");
             return new CommandState();
         }
 
+        //Those following Execute methods are called when the command is invoked with the respective parameter
+        //To make the runtime binding work the method has to be of this name:
+        //Format: Execute{ParameterName}Async
         public async Task<CommandState>  ExecuteListAsync(CommandState commandState, DurableTaskClient client)
         {
             var agents = Assembly.GetExecutingAssembly().GetTypes()
