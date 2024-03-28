@@ -18,6 +18,8 @@ namespace DurableFunctions.SemanticKernel.Commands
         public string ActiveAgentOrchestratorId { get; set; } = "";
 
         public string Prompt { get; set; } = "";
+
+        public bool IsExecutable { get; set; } = false;
     }
 
     //To implement a command set these attributes and implement the ICommand interface
@@ -79,6 +81,7 @@ namespace DurableFunctions.SemanticKernel.Commands
 
             if (commandState is not AgentCommandState agentCommandState)
                 throw new ArgumentException("Invalid command state type");
+           
             if (!CheckForRequiremenets(agentCommandState))
             {
                 await WebCliBridge.SendMessage(agentCommandState!.StatusMessage);

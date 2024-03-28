@@ -9,6 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="AutoGen" Version="0.0.10" />
+    <PackageReference Include="AutoGen.Core" Version="0.0.10" />
     <!-- Workaround for M1 and M2 macs: ONLY WORKS WITH 2.41.0 
    https://github.com/Azure/azure-functions-durable-extension/issues/2446#issuecomment-1517203490 -->
     <PackageReference Include="Contrib.Grpc.Core.M1" Version="2.41.0" />

@@ -156,6 +156,7 @@
             msg = converter.makeHtml(msg);
             cli.innerHTML += msg; // Append each message
           });
+          cli.scrollTop = cli.scrollHeight; // Scroll to the bottom
         });
 
         fetch("/send", {

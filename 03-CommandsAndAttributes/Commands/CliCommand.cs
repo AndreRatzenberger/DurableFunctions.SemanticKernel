@@ -12,6 +12,7 @@ namespace DurableFunctions.SemanticKernel.Commands
     [CommandParameter("-clear", "Clears the console.")]
     [CommandParameter("-welcome", "Shows the welcome message.")]
     [CommandParameter("-verbose", "Shows logs in the console.")]
+    [CommandParameter("-markdown", "on/off switch. Renders CLI content as markdown.")]
     [CommandParameter("-help", "Shows this explanation of the command")]
     public class CliCommand : ICommand
     {

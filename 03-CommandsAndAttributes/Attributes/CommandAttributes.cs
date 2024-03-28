@@ -19,6 +19,12 @@ namespace DurableFunctions.SemanticKernel.Extensions
     {
         public string Name { get; } = name;
     }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class ParentCommandAttr(string parentCommand) : Attribute
+    {
+        public string ParentCommand { get; } = parentCommand;
+    }
 }
 
 

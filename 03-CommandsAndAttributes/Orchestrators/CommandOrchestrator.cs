@@ -1,3 +1,4 @@
+using DurableFunctions.SemanticKernel.Commands;
 using DurableFunctions.SemanticKernel.Commands.State;
 using DurableFunctions.SemanticKernel.Common;
 using Microsoft.Azure.Functions.Worker;
@@ -11,14 +12,19 @@ namespace DurableFunctions.SemanticKernel.Orchestrators
         public static async Task CommandOrchestratorAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var log = context.CreateReplaySafeLogger(nameof(CommandOrchestrator));
-            var commandState = new CommandState{Command = context.GetInput<string>()!};
+            var commandState = new CommandState{UserInput = context.GetInput<string>()!};
             commandState = await context.CallTryExecuteCommandAsync(commandState); 
+            context.SetCustomStatus(commandState);
 
             while (true)
             {
                 await context.CallSendMessageAsync(commandState.StatusMessage);
-                commandState.Command = await context.WaitForExternalEvent<string>(EventListener.CommandReceived);
+                commandState.UserInput = await context.WaitForExternalEvent<string>(EventListener.CommandReceived);
                 commandState = await context.CallTryExecuteCommandAsync(commandState); 
+                context.SetCustomStatus(commandState);
+                
+                if (commandState is AgentCommandState agentCommandState)
+                    agentCommandState = await context.CallSubOrchestratorAsync<AgentCommandState>(nameof(AgentOrchestrator.AgentOrchestratorAsync), agentCommandState);
             };
         }
     }

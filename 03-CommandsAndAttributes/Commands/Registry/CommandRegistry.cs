@@ -19,6 +19,7 @@ namespace DurableFunctions.SemanticKernel.Commands.Registry
         {
             public Dictionary<string, string> CommandParameters { get; set; } = [];
             public ICommand Command { get; set; } = null!;
+            Dictionary<string, CommandInstance> Subommands { get;  set; } = [];
         }
 
         public CommandRegistry()
@@ -51,8 +52,8 @@ namespace DurableFunctions.SemanticKernel.Commands.Registry
         public async Task<CommandState> TryExecuteCommand([ActivityTrigger] CommandState commandState, DurableTaskClient client)
         {
             _commandState = commandState;
-            var input = commandState.Command;
-            var segments = input.Split(' ', 2);
+            var input = _commandState.UserInput.Trim();
+            var segments = input.Split(' ');
             var commandKey = segments[0].ToLower();
             _commandState.Command = commandKey;
             if (_commands.TryGetValue(commandKey, out var commandInstance))
@@ -100,9 +101,11 @@ namespace DurableFunctions.SemanticKernel.Commands.Registry
             }
             else
             {
-                commandState.StatusMessage = $"No action found for parameter {parameter}.";
-                await ShowCommandStatus(commandState);
-                return new CommandState();
+                commandState = new CommandState
+                {
+                    StatusMessage = $"No action found for parameter {parameter}. Not yet implemented"
+                };
+                return commandState;
             }
         }
 

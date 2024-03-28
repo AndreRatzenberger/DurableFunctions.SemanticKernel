@@ -24,18 +24,19 @@ namespace DurableFunctions.SemanticKernel.Functions
             var status = client.CreateCheckStatusResponseAsync(req, instanceId);
             var orchestrator = await client.GetInstanceAsync(instanceId);
 
-            if(orchestrator != null && orchestrator.RuntimeStatus == OrchestrationRuntimeStatus.Running)
-                if(IsActiveOrchestrator(orchestrator)) {
+            if (orchestrator != null && orchestrator.RuntimeStatus == OrchestrationRuntimeStatus.Running)
+                if (IsActiveOrchestrator(orchestrator))
+                {
                     await client.RaiseEventAsync(instanceId, EventListener.CommandReceived, requestBody);
                     return client.CreateCheckStatusResponse(req, instanceId);
                 }
-       
-            var startOrchestrationOptions = new StartOrchestrationOptions{InstanceId = instanceId};
+
+            var startOrchestrationOptions = new StartOrchestrationOptions { InstanceId = instanceId };
             instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(CommandOrchestrator), requestBody, startOrchestrationOptions);
             return client.CreateCheckStatusResponse(req, instanceId);
         }
 
-         public static bool IsActiveOrchestrator(OrchestrationMetadata existingInstanceStatus)
+        public static bool IsActiveOrchestrator(OrchestrationMetadata existingInstanceStatus)
         {
             if (existingInstanceStatus != null &&
                 existingInstanceStatus.RuntimeStatus != OrchestrationRuntimeStatus.Completed &&
@@ -46,11 +47,11 @@ namespace DurableFunctions.SemanticKernel.Functions
         }
 
 
-         [Function(nameof(SanityCheck))]
+        [Function(nameof(SanityCheck))]
         public static async Task<string> SanityCheck(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req,
-            [DurableClient] DurableTaskClient client,
-            FunctionContext executionContext)
+           [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req,
+           [DurableClient] DurableTaskClient client,
+           FunctionContext executionContext)
         {
             var logger = executionContext.GetLogger(nameof(StartSemanticKernel));
             await WebCliBridge.SendMessage("Sanity");
