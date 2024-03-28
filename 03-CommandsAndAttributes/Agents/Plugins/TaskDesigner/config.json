@@ -1,0 +1,32 @@
+{
+    "schema": 1,
+    "type": "completion",
+    "description": "Designs the tasks needed to implement a user story in a project plan",
+    "completion": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0,
+        "presence_penalty": 0,
+        "frequency_penalty": 0
+    },
+    "input": {
+        "parameters": [
+            {
+                "name": "inputProjectPlan",
+                "description": "Project Plan to degin tasks for",
+                "defaultValue": ""
+            },
+            {
+                "name": "inputAlreadyCreatedItems",
+                "description": "Already created user stories and tasks",
+                "defaultValue": ""
+            },
+            {
+                "name": "inputUserStory",
+                "description": "User Story to create tasks for",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "default_backends": []
+}

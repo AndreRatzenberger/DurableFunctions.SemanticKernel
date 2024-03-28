@@ -4,6 +4,7 @@ using Microsoft.DurableTask.Client;
 using DurableFunctions.SemanticKernel.Common;
 using DurableFunctions.SemanticKernel.Extentions;
 using DurableFunctions.SemanticKernel.Services;
+using System.Net;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {
@@ -21,6 +22,10 @@ namespace DurableFunctions.SemanticKernel.Functions
             using (StreamReader reader = new(req.Body))
             {
                 requestBody = await reader.ReadToEndAsync();
+            }
+            if(requestBody.Equals("cli.welcome"))
+            {
+                return HttpRequestDataExtensions.CreateResponse(req, HttpStatusCode.OK);
             }
             var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(OrchestratorNames.AgentOrchestrator, requestBody);
             return client.CreateCheckStatusResponse(req, instanceId);

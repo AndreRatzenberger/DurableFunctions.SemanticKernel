@@ -2,6 +2,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using DurableFunctions.SemanticKernel.Orchestrators;
+using System.Net;
 
 namespace DurableFunctions.SemanticKernel.Functions
 {
@@ -18,6 +19,10 @@ namespace DurableFunctions.SemanticKernel.Functions
             using (StreamReader reader = new(req.Body))
             {
                 requestBody = await reader.ReadToEndAsync();
+            }
+            if(requestBody.Equals("cli.welcome"))
+            {
+                return HttpRequestDataExtensions.CreateResponse(req, HttpStatusCode.OK);
             }
             var instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(AgentOrchestrator), requestBody);
             return client.CreateCheckStatusResponse(req, instanceId);

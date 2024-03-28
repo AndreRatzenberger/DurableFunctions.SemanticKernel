@@ -13,8 +13,16 @@
         "parameters": [
             {
                 "name": "input",
-                "description": "Input for this semantic function.",
-                "defaultValue": "I want to create a vscode extention which displays all python functions that are in my current workspace/folder and subfolders that have \"PyGraphVS=true\" in their docstring as nodes.  I can connect those nodes, so the output of one node flows as input to another. "
+                "description": "Project idea or description",
+                "defaultValue": ""
+            }
+        ]
+    },
+    "output": {
+        "parameters": [
+            {
+                "name": "output",
+                "description": "Generated Project Plan"
             }
         ]
     },

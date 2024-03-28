@@ -1,7 +1,7 @@
 {
     "schema": 1,
     "type": "completion",
-    "description": "Does simple tasks, whatever the user wants",
+    "description": "Generates a chain of thought to any given problem",
     "completion": {
         "max_tokens": 4096,
         "temperature": 0.7,

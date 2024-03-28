@@ -1,18 +1,17 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
-using DurableFunctions.SemanticKernel.Services;
 using Microsoft.SemanticKernel.Planning.Handlebars;
 using DurableFunctions.SemanticKernel.Agents.Plugins;
-using Microsoft.SemanticKernel.Planning;
-using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
+    [DFSKAgentName("HandlebarsMathAgent")]
+    [DFSKAgentDescription("This agent can solve math problems using Handlebars templates. For slightly more complex math problems.")]
     public class HandlebarsMathAgent : BaseAgent
     {
         private readonly ConfigurationService _configurationService;
@@ -28,6 +27,8 @@ namespace DurableFunctions.SemanticKernel.Agents
             _kernel = builder.WithOptionsConfiguration(_configurationService.GetCurrentConfiguration()).Build();
         }
 
+        [DFSKAgentCommand($"{nameof(HandlebarsMathAgent)}_Start")]
+        [DFSKInput($"Any math problem you want to solve that is too complex for the stepwise math agent.")]
         [Function($"{nameof(HandlebarsMathAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {

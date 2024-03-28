@@ -5,10 +5,12 @@
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>SKEXP0003, SKEXP0004, SKEXP0011, SKEXP0052, SKEXP0060,SKEXP0050</NoWarn>
+    <NoWarn>SKEXP0001, SKEXP0010, SKEXP0003, SKEXP0004, SKEXP0011, SKEXP0052, SKEXP0060,SKEXP0050,SKEXP0101</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="AutoGen" Version="0.0.10" />
+    <PackageReference Include="AutoGen.Core" Version="0.0.10" />
     <!-- Workaround for M1 and M2 macs: ONLY WORKS WITH 2.41.0 
    https://github.com/Azure/azure-functions-durable-extension/issues/2446#issuecomment-1517203490 -->
     <PackageReference Include="Contrib.Grpc.Core.M1" Version="2.41.0" />
@@ -25,6 +27,7 @@
     <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.6.3-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.OpenAI" Version="1.6.3-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.6.3-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Experimental.Agents" Version="1.6.3-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.6.3" />
   </ItemGroup>
   <ItemGroup>

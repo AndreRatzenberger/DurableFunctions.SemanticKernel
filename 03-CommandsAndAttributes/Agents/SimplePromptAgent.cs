@@ -1,11 +1,13 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.SemanticKernel;
 using DurableFunctions.SemanticKernel.Options;
-using DurableFunctions.SemanticKernel.Extentions;
+using DurableFunctions.SemanticKernel.Extensions;
 
 
 namespace DurableFunctions.SemanticKernel.Agents
 {
+    [DFSKAgentName("SimplePromptAgent")]
+    [DFSKAgentDescription("A simple agent that just reacts on prompts like ChatGPT.")]
     public class SimplePrompAgent : BaseAgent
     {
 
@@ -20,6 +22,8 @@ namespace DurableFunctions.SemanticKernel.Agents
                 .Build();
         }
 
+        [DFSKAgentCommand($"{nameof(SimplePrompAgent)}_Start")]
+        [DFSKInput($"A simple prompt")]
         [Function($"{nameof(SimplePrompAgent)}_Start")]
         public async Task<string?> Start([ActivityTrigger] string input, FunctionContext context)
         {

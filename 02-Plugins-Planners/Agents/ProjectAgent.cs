@@ -38,7 +38,7 @@ namespace DurableFunctions.SemanticKernel.Agents
         protected override async Task<string?> ExecuteAgent(string input)
         {
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-
+            Directory.CreateDirectory(_baseFolderPath);
             //If the input is a valid guid, we will load the files from the disk 
             //to continue the process where it was left off
             var guid = await ProcessInputGuid(input);

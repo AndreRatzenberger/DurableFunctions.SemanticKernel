@@ -22,7 +22,7 @@
         width: 100%;
       }
 
-      #cli {
+      #clicontainer {
         background-color: #263238;
         color: #80cbc4;
         font-family: monospace;
@@ -83,7 +83,7 @@
 
   <body>
     <h2>DurableFunction.SemanticKernel CLI</h2>
-    <div id="cli"></div>
+    <div id="clicontainer"></div>
     <form id="messageForm" action="/send" method="post">
       <input
         type="text"
@@ -102,16 +102,17 @@
       document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("messageForm");
         const messageInput = document.querySelector('input[name="message"]');
+        
 
         form.onsubmit = function (e) {
           e.preventDefault();
           const message = messageInput.value.trim();
 
-          if (message.toLowerCase() === "cli.clear") {
+          if (message.toLowerCase() === "cli -clear") {
             fetch("/clear", { method: "DELETE" })
               .then((response) => {
                 if (response.ok) {
-                  var cli = document.getElementById("cli");
+                  var cli = document.getElementById("clicontainer");
                   cli.innerHTML = "";
                   messageInput.value = "";
                   console.log("CLI cleared");
@@ -149,13 +150,32 @@
         var converter = new showdown.Converter();
 
         socket.on("callback_data", function (data) {
-          var cli = document.getElementById("cli");
+          var cli = document.getElementById("clicontainer");
           cli.innerHTML = ""; // Clear existing content
           data.forEach(function (msg) {
             msg = converter.makeHtml(msg);
             cli.innerHTML += msg; // Append each message
           });
+          cli.scrollTop = cli.scrollHeight; // Scroll to the bottom
         });
+
+        fetch("/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `message=${encodeURIComponent("cli -welcome")}`,
+        })
+          .then((response) => {
+            form.click();
+            messageInput.focus();
+            if (response.ok) {
+              console.log("Welcome message sent successfully");
+            } else {
+              console.error("Failed to send welcome message");
+            }
+          })
+          .catch((error) =>
+            console.error("Error sending welcome message:", error)
+          );
       });
     </script>
   </body>
